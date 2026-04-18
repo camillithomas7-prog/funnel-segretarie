@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover">
+<meta name="theme-color" content="#dc2626">
+<title>Corso Segretaria + Inserimento Lavorativo Garantito</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<!-- Meta Pixel Code -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '1640258307311235');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1640258307311235&ev=PageView&noscript=1"/></noscript>
+<!-- End Meta Pixel Code -->
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--blue:#1a3a6b;--blue-light:#e8f0fe;--gold:#d4a03c;--gold-soft:#fdf6e3;--green:#16a34a;--green-soft:#dcfce7;--red:#dc2626;--dark:#111;--text:#3a3a3a;--muted:#888;--light:#f8f7f5;--white:#fff;--font:'Inter',sans-serif}
+body{font-family:var(--font);color:var(--text);background:var(--white);-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+.page-wrap{overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+img{max-width:100%;display:block}
+.c{max-width:680px;margin:0 auto;padding:0 24px}
+.sec{padding:56px 24px}
+
+/* TOPBAR */
+.topbar{background:var(--red);color:#fff;text-align:center;padding:10px 16px;font-size:12px;font-weight:700;letter-spacing:0.02em}
+.topbar span{animation:blink 1.5s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.5}}
+
+/* CREATIVE CARD */
+.creative{max-width:500px;margin:0 auto 0;background:linear-gradient(135deg,#0f2647 0%,#1a3a6b 50%,#1e4d8f 100%);border-radius:20px;padding:36px 32px;color:#fff;text-align:center;box-shadow:0 16px 48px rgba(26,58,107,0.25)}
+.creative__badge{display:inline-block;background:var(--gold);color:var(--blue);padding:5px 16px;border-radius:20px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:16px}
+.creative h2{font-size:24px;font-weight:900;line-height:1.2;margin-bottom:6px;color:#fff}
+.creative h2 em{color:var(--gold);font-style:normal}
+.creative__sub{font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:20px}
+.creative__list{text-align:left;display:flex;flex-direction:column;gap:8px;margin-bottom:24px;padding:0 12px}
+.creative__list li{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600}
+.creative__list li .ck{width:22px;height:22px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:12px;color:var(--blue)}
+.creative__cta{display:inline-block;padding:16px 40px;background:var(--gold);color:var(--blue);border-radius:50px;font-size:15px;font-weight:800;transition:all .3s;box-shadow:0 6px 24px rgba(212,160,60,0.3)}
+.creative__cta:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(212,160,60,0.4)}
+.creative__price{margin-bottom:18px;display:flex;align-items:center;justify-content:center;gap:10px}
+.creative__price-old{font-size:18px;color:rgba(255,255,255,0.4);text-decoration:line-through;font-weight:600}
+.creative__price-now{font-size:38px;font-weight:900;color:var(--gold)}
+.creative__price-label{font-size:10px;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.05em;font-weight:600}
+.creative__note{font-size:10px;color:rgba(255,255,255,0.3);margin-top:10px}
+
+/* RASSICURAZIONE */
+.reassure{max-width:500px;margin:20px auto 0;background:var(--white);border-radius:14px;padding:20px 22px;border-left:4px solid var(--gold);box-shadow:0 4px 16px rgba(0,0,0,0.06)}
+.reassure__q{font-size:14px;font-weight:800;color:var(--dark);margin-bottom:6px}
+.reassure p{font-size:13px;color:var(--text);line-height:1.65}
+.reassure p strong{color:var(--dark)}
+
+/* TRUST BAR */
+.trust-label{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;text-align:center;margin-bottom:20px}
+.trust-logos{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:24px 32px}
+.trust-logo{opacity:0.7;transition:opacity .2s;text-align:center;line-height:1.2}
+.trust-logo:hover{opacity:1}
+
+/* HERO */
+.hero{position:relative;overflow:hidden}
+.hero img{width:100%;height:400px;object-fit:cover}
+.hero__overlay{position:absolute;inset:0;background:linear-gradient(transparent 20%,rgba(0,0,0,0.75));display:flex;flex-direction:column;justify-content:flex-end;padding:32px 28px;color:#fff}
+.hero h1{font-size:clamp(24px,5.5vw,38px);font-weight:900;line-height:1.15;margin-bottom:8px}
+.hero h1 em{color:var(--gold);font-style:normal}
+.hero p{font-size:15px;color:rgba(255,255,255,0.7);max-width:500px}
+
+/* SECTION STYLES */
+h2{font-size:clamp(22px,4.5vw,30px);font-weight:800;color:var(--dark);line-height:1.25;margin-bottom:10px}
+h2 em{color:var(--blue);font-style:normal}
+.sub{font-size:14px;color:var(--muted);line-height:1.6;margin-bottom:24px}
+
+/* PROBLEM */
+.problem__cards{display:flex;flex-direction:column;gap:8px}
+.problem__card{padding:16px 18px;background:var(--light);border-radius:14px;border-left:3px solid var(--red);font-size:14px;line-height:1.6}
+.problem__card strong{color:var(--dark)}
+
+/* SOLUTION */
+.solution__box{background:linear-gradient(135deg,var(--blue),#1e4d8f);border-radius:20px;padding:32px 28px;color:#fff;text-align:center}
+.solution__box h3{font-size:20px;font-weight:800;margin-bottom:6px}
+.solution__box p{font-size:14px;color:rgba(255,255,255,0.6);margin-bottom:20px}
+.solution__steps{display:flex;flex-direction:column;gap:10px;text-align:left}
+.solution__step{display:flex;gap:14px;align-items:flex-start;background:rgba(255,255,255,0.06);border-radius:12px;padding:14px 16px}
+.solution__num{width:32px;height:32px;border-radius:50%;background:var(--gold);color:var(--blue);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;flex-shrink:0}
+.solution__step h4{font-size:14px;font-weight:700;margin-bottom:2px}
+.solution__step p{font-size:12px;color:rgba(255,255,255,0.5)}
+
+/* BENEFITS */
+.benefits__grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:500px){.benefits__grid{grid-template-columns:1fr}}
+.benefit{padding:20px;background:var(--light);border-radius:16px;text-align:center}
+.benefit__icon{font-size:32px;margin-bottom:8px}
+.benefit h4{font-size:14px;font-weight:700;color:var(--dark);margin-bottom:3px}
+.benefit p{font-size:12px;color:var(--muted);line-height:1.5}
+
+/* JOB DETAILS */
+.job{background:var(--green-soft);border-radius:20px;padding:28px 24px;border:2px solid rgba(22,163,74,0.15)}
+.job h3{font-size:18px;font-weight:800;color:var(--green);margin-bottom:14px;text-align:center}
+.job__grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+@media(max-width:500px){.job__grid{grid-template-columns:1fr}}
+.job__item{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--white);border-radius:12px;font-size:13px;font-weight:600;color:var(--dark)}
+.job__item span{font-size:20px;flex-shrink:0}
+
+/* PRICE */
+.price-box{text-align:center;background:var(--light);border-radius:20px;padding:32px 24px;border:2px solid var(--blue)}
+.price-box .old{font-size:14px;color:var(--muted);text-decoration:line-through}
+.price-box .current{font-size:48px;font-weight:900;color:var(--blue)}
+.price-box .current sup{font-size:20px}
+.price-box .note{font-size:12px;color:var(--muted);margin-top:6px}
+
+/* PAYMENT */
+.pay__options{display:flex;flex-direction:column;gap:10px}
+.pay__option{padding:18px 20px;background:var(--light);border-radius:14px;border:1px solid #eee}
+.pay__option h4{font-size:14px;font-weight:700;color:var(--dark);margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.pay__option h4 span{font-size:20px}
+.pay__option p{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* TESTIMONIALS */
+.testi__grid{display:flex;flex-direction:column;gap:10px}
+.testi{padding:20px;background:var(--light);border-radius:14px}
+.testi__stars{color:var(--gold);font-size:14px;letter-spacing:2px;margin-bottom:6px}
+.testi__text{font-size:13px;color:var(--text);line-height:1.65;font-style:italic;margin-bottom:8px}
+.testi__author{font-size:12px;font-weight:700;color:var(--dark)}
+.testi__info{font-size:10px;color:var(--muted)}
+
+/* OBJECTIONS */
+.obj{border-bottom:1px solid #eee;padding:14px 0}
+.obj__q{display:flex;justify-content:space-between;align-items:center;cursor:pointer;font-size:14px;font-weight:600;color:var(--dark);gap:10px}
+.obj__q svg{width:14px;height:14px;stroke:var(--muted);stroke-width:2;fill:none;flex-shrink:0;transition:transform .3s}
+.obj.open .obj__q svg{transform:rotate(180deg)}
+.obj__a{max-height:0;overflow:hidden;transition:max-height .4s ease}
+.obj.open .obj__a{max-height:400px}
+.obj__a p{padding-top:10px;font-size:13px;color:var(--muted);line-height:1.7}
+
+/* URGENCY */
+.urgency{background:var(--red);color:#fff;padding:20px;border-radius:16px;text-align:center}
+.urgency__big{font-size:28px;font-weight:900;margin-bottom:4px}
+.urgency p{font-size:13px;color:rgba(255,255,255,0.7)}
+
+/* CTA */
+.cta-btn{display:block;text-align:center;padding:18px;background:var(--gold);color:var(--blue);border-radius:16px;font-size:16px;font-weight:800;transition:all .3s;box-shadow:0 6px 24px rgba(212,160,60,0.25);max-width:480px;margin:0 auto;position:relative;overflow:hidden}
+.cta-btn::after{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:linear-gradient(45deg,transparent 30%,rgba(255,255,255,0.15) 50%,transparent 70%);animation:shine 4s infinite}
+@keyframes shine{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 10px 32px rgba(212,160,60,0.35);text-decoration:none}
+.cta-sub{text-align:center;font-size:11px;color:var(--muted);margin-top:8px}
+
+/* GUARANTEE */
+.guarantee{text-align:center;padding:28px;border:2px solid var(--gold);border-radius:16px;background:var(--gold-soft)}
+.guarantee__icon{font-size:40px;margin-bottom:8px}
+.guarantee h3{font-size:16px;font-weight:800;color:var(--dark);margin-bottom:6px}
+.guarantee p{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* COUNTER */
+.counter{text-align:center;padding:20px;background:var(--dark);border-radius:16px;color:#fff}
+.counter__spots{font-size:48px;font-weight:900;color:var(--gold)}
+.counter p{font-size:13px;color:rgba(255,255,255,0.5)}
+
+/* FOOTER */
+footer{padding:20px;text-align:center;font-size:10px;color:#ccc;background:var(--dark)}
+footer a{color:rgba(255,255,255,0.3)}
+
+/* CORSO MODULI */
+.moduli__grid{display:flex;flex-direction:column;gap:12px}
+.modulo{display:flex;align-items:center;gap:16px;padding:20px;background:var(--white);border-radius:16px;border:1.5px solid #e8e8e8;transition:all .3s}
+.modulo:hover{border-color:var(--blue);box-shadow:0 4px 16px rgba(26,58,107,0.08)}
+.modulo__icon{width:56px;height:56px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:28px;flex-shrink:0}
+.modulo__icon--excel{background:#dcfce7;color:#16a34a}
+.modulo__icon--calendar{background:#e8f0fe;color:#4285f4}
+.modulo__icon--word{background:#e8f0fe;color:#1a3a6b}
+.modulo__icon--ppt{background:#fef3c7;color:#d97706}
+.modulo h4{font-size:15px;font-weight:700;color:var(--dark);margin-bottom:2px}
+.modulo p{font-size:12px;color:var(--muted);line-height:1.5}
+.modulo__durata{font-size:11px;font-weight:600;color:var(--blue);background:var(--blue-light);padding:3px 10px;border-radius:20px;white-space:nowrap}
+.modulo__content{flex:1}
+.cert-box{margin-top:24px;text-align:center;background:var(--gold-soft);border-radius:20px;padding:28px 24px;border:2px solid rgba(212,160,60,0.2)}
+.cert-box img{max-width:400px;width:100%;margin:0 auto 16px;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.1)}
+.cert-box h3{font-size:18px;font-weight:800;color:var(--dark);margin-bottom:6px}
+.cert-box p{font-size:13px;color:var(--muted);line-height:1.6}
+.assunzione-box{margin-top:20px;background:linear-gradient(135deg,var(--green),#15803d);border-radius:20px;padding:28px 24px;color:#fff;text-align:center}
+.assunzione-box .ass-icon{font-size:48px;margin-bottom:10px}
+.assunzione-box h3{font-size:22px;font-weight:900;margin-bottom:6px}
+.assunzione-box p{font-size:14px;color:rgba(255,255,255,0.7);line-height:1.6}
+
+/* WHATSAPP BUTTON */
+.whatsapp-float{position:fixed!important;bottom:24px!important;right:24px!important;width:60px!important;height:60px!important;background:#25d366!important;border-radius:50%!important;display:flex!important;align-items:center!important;justify-content:center!important;box-shadow:0 4px 16px rgba(37,211,102,0.4)!important;z-index:999999!important;transition:all .3s}
+.whatsapp-float:hover{transform:scale(1.1);box-shadow:0 6px 24px rgba(37,211,102,0.5)!important}
+.whatsapp-float svg{width:32px;height:32px;fill:#fff!important}
+
+/* FORM */
+.form-candidatura{max-width:520px;margin:0 auto}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:12px;font-weight:600;color:var(--dark);margin-bottom:5px}
+.form-group input,.form-group select{width:100%;padding:12px 14px;border:1.5px solid #e0e0e0;border-radius:10px;font-size:14px;font-family:var(--font);background:var(--white);transition:border-color .2s;-webkit-appearance:none;appearance:none}
+.form-group input:focus,.form-group select:focus{outline:none;border-color:var(--blue)}
+.form-group input::placeholder{color:#bbb}
+.pay-choice{display:flex;flex-direction:column;gap:8px}
+.pay-radio{cursor:pointer}
+.pay-radio input{display:none}
+.pay-radio__box{display:flex;align-items:center;gap:12px;padding:14px 16px;border:1.5px solid #e0e0e0;border-radius:12px;transition:all .2s;background:var(--white)}
+.pay-radio input:checked+.pay-radio__box{border-color:var(--blue);background:var(--blue-light);box-shadow:0 2px 8px rgba(26,58,107,0.08)}
+.pay-radio__icon{font-size:24px;flex-shrink:0}
+.pay-radio__box strong{font-size:14px;color:var(--dark);display:block}
+.pay-radio__box small{font-size:11px;color:var(--muted);line-height:1.4}
+@media(max-width:500px){.form-row{grid-template-columns:1fr}}
+
+/* MOBILE */
+@media(max-width:600px){
+  /* Spacing globale ridotto */
+  .sec{padding:36px 16px}
+  .c{padding:0 16px}
+
+  /* Trust bar */
+  .trust-label{font-size:10px;margin-bottom:16px}
+  .trust-logos{gap:16px 24px}
+  .trust-logo{font-size:14px!important}
+
+  /* Topbar */
+  .topbar{padding:8px 12px;font-size:11px}
+
+  /* Creative card */
+  .creative{padding:24px 18px;border-radius:14px;margin:0 -4px;box-shadow:0 12px 36px rgba(26,58,107,0.2)}
+  .creative__badge{font-size:9px;padding:4px 12px}
+  .creative h2{font-size:20px}
+  .creative__sub{font-size:12px;margin-bottom:16px}
+  .creative__list{padding:0 4px;gap:6px;margin-bottom:18px}
+  .creative__list li{font-size:12px;gap:8px}
+  .creative__list li .ck{width:20px;height:20px;font-size:10px}
+  .creative__price-old{font-size:16px}
+  .creative__price-now{font-size:32px}
+  .creative__cta{padding:14px 32px;font-size:14px;width:100%;text-align:center}
+  .creative__note{font-size:9px}
+
+  /* Hero */
+  .hero img{height:240px}
+  .hero__overlay{padding:20px 18px}
+  .hero h1{font-size:22px}
+  .hero p{font-size:13px}
+
+  /* Titoli e sottotitoli */
+  h2{font-size:22px}
+  .sub{font-size:13px;margin-bottom:18px}
+
+  /* Problema */
+  .problem__cards{gap:6px}
+  .problem__card{padding:14px 14px;font-size:13px;border-radius:12px}
+
+  /* Soluzione */
+  .solution__box{padding:22px 16px;border-radius:16px}
+  .solution__box h3{font-size:18px}
+  .solution__box p{font-size:13px;margin-bottom:16px}
+  .solution__steps{gap:8px}
+  .solution__step{padding:12px 14px;border-radius:10px;gap:12px}
+  .solution__num{width:28px;height:28px;font-size:12px}
+  .solution__step h4{font-size:13px}
+  .solution__step p{font-size:11px}
+
+  /* Lavoro */
+  .job{padding:22px 16px;border-radius:16px}
+  .job h3{font-size:16px;margin-bottom:10px}
+  .job__grid{grid-template-columns:1fr;gap:6px}
+  .job__item{font-size:12px;padding:10px 12px;border-radius:10px;gap:8px}
+  .job__item span{font-size:18px}
+
+  /* Benefici */
+  .benefits__grid{grid-template-columns:1fr;gap:8px}
+  .benefit{padding:16px;border-radius:14px;text-align:left;display:flex;gap:14px;align-items:center}
+  .benefit__icon{font-size:28px;margin-bottom:0;flex-shrink:0}
+  .benefit h4{font-size:13px;margin-bottom:2px}
+  .benefit p{font-size:11px}
+
+  /* Prezzo */
+  .price-box{padding:24px 18px;border-radius:16px}
+  .price-box .old{font-size:13px}
+  .price-box .current{font-size:40px}
+  .price-box .current sup{font-size:18px}
+  .price-box .note{font-size:11px}
+
+  /* Pagamento */
+  .pay__options{gap:8px}
+  .pay__option{padding:16px;border-radius:12px}
+  .pay__option h4{font-size:13px;gap:6px}
+  .pay__option h4 span{font-size:18px}
+  .pay__option p{font-size:12px}
+
+  /* CTA */
+  .cta-btn{padding:16px;font-size:15px;border-radius:14px}
+  .cta-sub{font-size:10px}
+
+  /* Testimonial */
+  .testi__grid{gap:8px}
+  .testi{padding:16px;border-radius:12px}
+  .testi__stars{font-size:13px}
+  .testi__text{font-size:12px;margin-bottom:6px}
+  .testi__author{font-size:11px}
+  .testi__info{font-size:9px}
+
+  /* FAQ */
+  .obj{padding:12px 0}
+  .obj__q{font-size:13px}
+  .obj__a p{font-size:12px;padding-top:8px}
+
+  /* Urgency */
+  .urgency{padding:18px 16px;border-radius:14px}
+  .urgency__big{font-size:24px}
+  .urgency p{font-size:12px}
+  .counter{padding:16px;border-radius:14px}
+  .counter__spots{font-size:36px}
+  .counter p{font-size:12px}
+
+  /* Garanzia */
+  .guarantee{padding:22px 18px;border-radius:14px}
+  .guarantee__icon{font-size:34px}
+  .guarantee h3{font-size:15px}
+  .guarantee p{font-size:12px}
+
+  /* Form */
+  .form-group input,.form-group select{padding:11px 12px;font-size:13px;border-radius:8px}
+  .pay-radio__box{padding:12px 14px;border-radius:10px}
+  .pay-radio__box strong{font-size:13px}
+  .pay-radio__box small{font-size:10px}
+  .pay-radio__icon{font-size:20px}
+
+  /* Footer */
+  footer{padding:16px;font-size:9px}
+
+  /* Moduli corso */
+  .modulo{padding:16px;gap:12px}
+  .modulo__icon{width:48px;height:48px;font-size:24px;border-radius:12px}
+  .modulo h4{font-size:14px}
+  .modulo p{font-size:11px}
+  .cert-box{padding:20px 16px}
+  .cert-box img{max-width:300px}
+  .assunzione-box{padding:22px 18px}
+  .assunzione-box h3{font-size:20px}
+  .whatsapp-float{bottom:20px!important;right:16px!important;width:56px!important;height:56px!important}
+  .whatsapp-float svg{width:28px;height:28px}
+
+  /* CTA finale */
+  .sec:last-of-type .c h2{font-size:20px}
+  .sec:last-of-type .c>p{font-size:13px!important}
+}
+
+/* Touch targets minimi 44px */
+@media(max-width:600px){
+  .obj__q{min-height:44px;padding:4px 0}
+  .cta-btn{min-height:52px;display:flex;align-items:center;justify-content:center}
+  .creative__cta{min-height:48px;display:flex;align-items:center;justify-content:center}
+}
+
+/* Fix per schermi molto piccoli (iPhone SE, 375px) */
+@media(max-width:380px){
+  .creative{padding:20px 14px}
+  .creative h2{font-size:18px}
+  .creative__list li{font-size:11px}
+  .creative__cta{padding:12px 24px;font-size:13px}
+  .hero img{height:200px}
+  .hero h1{font-size:20px}
+  h2{font-size:20px}
+  .price-box .current{font-size:36px}
+  .solution__box{padding:18px 14px}
+  .job{padding:18px 12px}
+}
+</style>
+</head>
+<body>
+
+<div class="page-wrap">
+<!-- TOPBAR -->
+<div class="topbar"><span>Le candidature chiudono domani — Solo 10 posti disponibili</span></div>
+
+<!-- CREATIVE CARD -->
+<section class="sec" style="background:var(--light);padding-bottom:32px">
+  <div class="creative">
+    <div class="creative__badge">Posti limitati</div>
+    <h2>Corso Segretaria + <em>Inserimento Lavorativo</em></h2>
+    <div class="creative__sub">Formati con noi, lavora da casa. Le aziende ti aspettano.</div>
+    <ul class="creative__list">
+      <li><span class="ck">&#10003;</span> Smartworking da casa</li>
+      <li><span class="ck">&#10003;</span> 4 ore al giorno, dal lunedi al venerdi</li>
+      <li><span class="ck">&#10003;</span> 1.500&euro; al mese</li>
+      <li><span class="ck">&#10003;</span> Contratto a tempo indeterminato</li>
+      <li><span class="ck">&#10003;</span> 13&ordf; e 14&ordf; mensilita</li>
+      <li><span class="ck">&#10003;</span> 2 settimane ferie estive + 2 invernali</li>
+      <li><span class="ck">&#10003;</span> Corso online + test finale</li>
+    </ul>
+    <div class="creative__price">
+      <span class="creative__price-old">&euro;297</span>
+      <span class="creative__price-now">&euro;89</span>
+      <span class="creative__price-label">offerta limitata</span>
+    </div>
+    <a href="#iscriviti" class="creative__cta">Candidati ora — 10 posti rimasti</a>
+    <div class="creative__note">Le aziende hanno gia fatto richiesta di personale</div>
+  </div>
+
+  <!-- RASSICURAZIONE PREZZO -->
+  <div class="reassure">
+    <div class="reassure__q">Perche devo pagare 89&euro; per lavorare?</div>
+    <p>Gli 89&euro; coprono il costo della formazione — il corso, il materiale, il portale e il supporto. <strong>Non paghi per il lavoro</strong>, paghi per la formazione che ti rende qualificata. Pensala cosi: investi 89&euro; e dal primo mese guadagni 1.500&euro;. <strong>Si ripaga in meno di 2 giorni di lavoro.</strong></p>
+  </div>
+</section>
+
+<!-- PARTNER TRUST BAR -->
+<section class="sec" style="background:var(--white);padding:32px 24px">
+  <div class="c">
+    <div class="trust-label">Siamo partner delle piu importanti agenzie per il lavoro</div>
+    <div class="trust-logos">
+      <div class="trust-logo" style="color:#db0028;font-family:'Georgia',serif;font-style:italic;font-weight:700;font-size:22px">Adecco</div>
+      <div class="trust-logo" style="color:#00a0df;font-weight:800;font-size:16px;letter-spacing:-0.02em"><span style="color:#ff6600">&#9612;</span><span style="color:#999">&#9612;</span><span style="color:#ccc">&#9612;</span> Manpower</div>
+      <div class="trust-logo" style="font-weight:900;font-size:20px"><span style="color:#003087">R</span><span style="color:#003087">andstad</span></div>
+      <div class="trust-logo" style="color:#00875a;font-weight:900;font-size:24px;font-family:'Georgia',serif">Kelly</div>
+      <div class="trust-logo" style="color:#1a3a6b;font-weight:700;font-size:15px;letter-spacing:0.05em">EUROINTERIM<br><span style="font-size:8px;color:#888;font-weight:400;letter-spacing:0.02em">Agenzia per il Lavoro</span></div>
+      <div class="trust-logo" style="color:#0066cc;font-weight:700;font-size:17px">jobtech</div>
+      <div class="trust-logo" style="font-weight:900;font-size:18px"><span style="color:#1a237e">M</span><span style="color:#ff9800">A</span><span style="color:#1a237e">W</span><br><span style="font-size:7px;color:#888;font-weight:400">awesome people, great results</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- COSA COMPRENDE IL CORSO -->
+<section class="sec" style="background:var(--light)">
+  <div class="c">
+    <h2>Cosa comprende il <em>corso</em></h2>
+    <p class="sub">4 moduli semplici da 1 ora ciascuno. Tutto quello che ti serve per essere operativa dal primo giorno.</p>
+    <div class="moduli__grid">
+      <div class="modulo">
+        <div class="modulo__icon modulo__icon--excel">&#128202;</div>
+        <div class="modulo__content">
+          <h4>Modulo 1 — Excel</h4>
+          <p>Impari a creare tabelle, formule base, grafici e a gestire dati. Lo strumento piu richiesto dalle aziende.</p>
+        </div>
+        <span class="modulo__durata">1 ora</span>
+      </div>
+      <div class="modulo">
+        <div class="modulo__icon modulo__icon--calendar">&#128197;</div>
+        <div class="modulo__content">
+          <h4>Modulo 2 — Google Calendar</h4>
+          <p>Gestisci appuntamenti, riunioni e scadenze. Organizzazione perfetta per il lavoro in smartworking.</p>
+        </div>
+        <span class="modulo__durata">1 ora</span>
+      </div>
+      <div class="modulo">
+        <div class="modulo__icon modulo__icon--word">&#128196;</div>
+        <div class="modulo__content">
+          <h4>Modulo 3 — Word</h4>
+          <p>Crea documenti professionali, lettere, report e verbali. La base di ogni segretaria.</p>
+        </div>
+        <span class="modulo__durata">1 ora</span>
+      </div>
+      <div class="modulo">
+        <div class="modulo__icon modulo__icon--ppt">&#128218;</div>
+        <div class="modulo__content">
+          <h4>Modulo 4 — PowerPoint</h4>
+          <p>Prepara presentazioni efficaci per riunioni e meeting aziendali. Slide chiare e professionali.</p>
+        </div>
+        <span class="modulo__durata">1 ora</span>
+      </div>
+    </div>
+
+    <!-- CERTIFICATO -->
+    <div class="cert-box">
+      <img src="img/certificato.jpg" alt="Certificato di Completamento">
+      <h3>Certificato di Completamento</h3>
+      <p>Al termine dei 4 moduli e dopo aver superato il test finale, riceverai il <strong>Certificato di Completamento</strong> che attesta le tue competenze. Questo certificato e' il tuo biglietto da visita per le aziende.</p>
+    </div>
+
+    <!-- TI ASSUMIAMO -->
+    <div class="assunzione-box">
+      <div class="ass-icon">&#127919;</div>
+      <h3>Il passaggio piu importante: ti assumiamo</h3>
+      <p>Una volta ottenuto il certificato, non ti lasciamo sola. <strong>Ti mettiamo direttamente in contatto con le aziende</strong> che hanno gia fatto richiesta di personale. Il tuo nuovo lavoro da casa inizia qui.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HERO -->
+<section class="hero">
+  <img src="img/hero.png" alt="Lavora da casa come segretaria">
+  <div class="hero__overlay">
+    <h1>Diventa segretaria e lavora <em>da casa</em> con contratto fisso</h1>
+    <p>Ti formiamo, superi il test e ti inseriamo direttamente in azienda. Nessuna esperienza richiesta.</p>
+  </div>
+</section>
+
+<!-- PROBLEMA -->
+<section class="sec" style="background:var(--white)">
+  <div class="c">
+    <h2>Ti riconosci in <em>questa situazione?</em></h2>
+    <p class="sub">Ogni giorno migliaia di persone cercano un lavoro stabile senza trovarlo.</p>
+    <div class="problem__cards">
+      <div class="problem__card"><strong>Invii decine di CV</strong> ma nessuno ti risponde. Sembra di parlare al muro.</div>
+      <div class="problem__card"><strong>I lavori che trovi pagano poco</strong>, hanno orari impossibili e nessuna garanzia.</div>
+      <div class="problem__card"><strong>Vorresti lavorare da casa</strong> ma non sai come iniziare e hai paura delle truffe online.</div>
+      <div class="problem__card"><strong>Non hai un diploma specifico</strong> o esperienze precedenti, e pensi di non avere possibilita.</div>
+      <div class="problem__card"><strong>Hai bisogno di stabilita</strong> — un contratto vero, uno stipendio fisso, la certezza del domani.</div>
+    </div>
+  </div>
+</section>
+
+<!-- SOLUZIONE -->
+<section class="sec" style="background:var(--light)">
+  <div class="c">
+    <h2>Ecco la soluzione che stavi <em>cercando</em></h2>
+    <p class="sub">Le aziende hanno bisogno di segretarie formate. Non hanno tempo per formarle internamente. Per questo si appoggiano a noi.</p>
+    <div class="solution__box">
+      <h3>Come funziona</h3>
+      <p>3 semplici passi per iniziare a lavorare da casa</p>
+      <div class="solution__steps">
+        <div class="solution__step">
+          <div class="solution__num">1</div>
+          <div><h4>Ti iscrivi al corso</h4><p>Paghi 89&euro;, ricevi subito l'accesso al portale e inizi la formazione online.</p></div>
+        </div>
+        <div class="solution__step">
+          <div class="solution__num">2</div>
+          <div><h4>Completi il corso e superi il test</h4><p>Impari tutto quello che serve per lavorare come segretaria. Al termine, un test finale verifica le tue competenze.</p></div>
+        </div>
+        <div class="solution__step">
+          <div class="solution__num">3</div>
+          <div><h4>Ti inseriamo in azienda</h4><p>Dopo il test, ti mettiamo in contatto diretto con le aziende che hanno gia fatto richiesta di personale. Inizi a lavorare.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DETTAGLI LAVORO -->
+<section class="sec" style="background:var(--white)">
+  <div class="c">
+    <h2>Il lavoro che ti aspetta</h2>
+    <p class="sub">Ecco cosa offrono le aziende che collaborano con noi.</p>
+    <div class="job">
+      <h3>Segretaria in Smartworking</h3>
+      <div class="job__grid">
+        <div class="job__item"><span>&#127968;</span> Lavoro da casa in smartworking</div>
+        <div class="job__item"><span>&#9200;</span> Solo 4 ore al giorno</div>
+        <div class="job__item"><span>&#128176;</span> 1.500&euro; al mese</div>
+        <div class="job__item"><span>&#128221;</span> Contratto a tempo indeterminato</div>
+        <div class="job__item"><span>&#128197;</span> Lunedi — Venerdi</div>
+        <div class="job__item"><span>&#127873;</span> 13&ordf; e 14&ordf; mensilita</div>
+        <div class="job__item"><span>&#9728;&#65039;</span> 2 settimane ferie estive</div>
+        <div class="job__item"><span>&#10052;&#65039;</span> 2 settimane ferie invernali</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FORM CANDIDATURA -->
+<section class="sec" style="background:var(--light);padding:48px 24px" id="iscriviti">
+  <div class="c">
+    <h2 style="text-align:center">Invia la tua <em>candidatura</em></h2>
+    <p class="sub" style="text-align:center">Compila il modulo e ti contatteremo entro 24 ore.</p>
+    <form class="form-candidatura" action="process_candidatura.php" method="POST" onsubmit="fbq('track','Purchase',{value:89.00,currency:'EUR'});">
+      <div class="form-row">
+        <div class="form-group"><label>Nome *</label><input type="text" name="nome" required placeholder="Il tuo nome"></div>
+        <div class="form-group"><label>Cognome *</label><input type="text" name="cognome" required placeholder="Il tuo cognome"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Telefono *</label><input type="tel" name="telefono" required placeholder="Es. 333 1234567"></div>
+        <div class="form-group"><label>Email</label><input type="email" name="email" placeholder="La tua email (opzionale)"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Citta *</label><input type="text" name="citta" required placeholder="La tua citta"></div>
+        <div class="form-group">
+          <label>Provincia *</label>
+          <select name="provincia" required>
+            <option value="">Seleziona...</option>
+            <option value="AG">Agrigento</option><option value="AL">Alessandria</option><option value="AN">Ancona</option><option value="AO">Aosta</option><option value="AR">Arezzo</option><option value="AP">Ascoli Piceno</option><option value="AT">Asti</option><option value="AV">Avellino</option>
+            <option value="BA">Bari</option><option value="BT">Barletta-Andria-Trani</option><option value="BL">Belluno</option><option value="BN">Benevento</option><option value="BG">Bergamo</option><option value="BI">Biella</option><option value="BO">Bologna</option><option value="BZ">Bolzano</option><option value="BS">Brescia</option><option value="BR">Brindisi</option>
+            <option value="CA">Cagliari</option><option value="CL">Caltanissetta</option><option value="CB">Campobasso</option><option value="CE">Caserta</option><option value="CT">Catania</option><option value="CZ">Catanzaro</option><option value="CH">Chieti</option><option value="CO">Como</option><option value="CS">Cosenza</option><option value="CR">Cremona</option><option value="KR">Crotone</option><option value="CN">Cuneo</option>
+            <option value="EN">Enna</option>
+            <option value="FM">Fermo</option><option value="FE">Ferrara</option><option value="FI">Firenze</option><option value="FG">Foggia</option><option value="FC">Forli-Cesena</option><option value="FR">Frosinone</option>
+            <option value="GE">Genova</option><option value="GO">Gorizia</option><option value="GR">Grosseto</option>
+            <option value="IM">Imperia</option><option value="IS">Isernia</option>
+            <option value="SP">La Spezia</option><option value="AQ">L'Aquila</option><option value="LT">Latina</option><option value="LE">Lecce</option><option value="LC">Lecco</option><option value="LI">Livorno</option><option value="LO">Lodi</option><option value="LU">Lucca</option>
+            <option value="MC">Macerata</option><option value="MN">Mantova</option><option value="MS">Massa-Carrara</option><option value="MT">Matera</option><option value="ME">Messina</option><option value="MI">Milano</option><option value="MO">Modena</option><option value="MB">Monza e Brianza</option>
+            <option value="NA">Napoli</option><option value="NO">Novara</option><option value="NU">Nuoro</option>
+            <option value="OR">Oristano</option>
+            <option value="PD">Padova</option><option value="PA">Palermo</option><option value="PR">Parma</option><option value="PV">Pavia</option><option value="PG">Perugia</option><option value="PU">Pesaro e Urbino</option><option value="PE">Pescara</option><option value="PC">Piacenza</option><option value="PI">Pisa</option><option value="PT">Pistoia</option><option value="PN">Pordenone</option><option value="PZ">Potenza</option><option value="PO">Prato</option>
+            <option value="RG">Ragusa</option><option value="RA">Ravenna</option><option value="RC">Reggio Calabria</option><option value="RE">Reggio Emilia</option><option value="RI">Rieti</option><option value="RN">Rimini</option><option value="RM">Roma</option><option value="RO">Rovigo</option>
+            <option value="SA">Salerno</option><option value="SS">Sassari</option><option value="SV">Savona</option><option value="SI">Siena</option><option value="SR">Siracusa</option><option value="SO">Sondrio</option><option value="SU">Sud Sardegna</option>
+            <option value="TA">Taranto</option><option value="TE">Teramo</option><option value="TR">Terni</option><option value="TO">Torino</option><option value="TP">Trapani</option><option value="TN">Trento</option><option value="TV">Treviso</option><option value="TS">Trieste</option>
+            <option value="UD">Udine</option>
+            <option value="VA">Varese</option><option value="VE">Venezia</option><option value="VB">Verbano-Cusio-Ossola</option><option value="VC">Vercelli</option><option value="VR">Verona</option><option value="VV">Vibo Valentia</option><option value="VI">Vicenza</option><option value="VT">Viterbo</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group"><label>Via e Numero Civico *</label><input type="text" name="indirizzo" required placeholder="Es. Via Roma 15"></div>
+      <div class="form-row">
+        <div class="form-group"><label>CAP *</label><input type="text" name="cap" required placeholder="Es. 00100" maxlength="5"></div>
+        <div class="form-group"><label>Scala / Interno</label><input type="text" name="scala" placeholder="Es. Scala B, Int. 3"></div>
+      </div>
+      <div class="form-group">
+        <label>Come preferisci pagare? *</label>
+        <div class="pay-choice">
+          <label class="pay-radio">
+            <input type="radio" name="metodo_pagamento" value="bonifico">
+            <div class="pay-radio__box">
+              <span class="pay-radio__icon">&#127974;</span>
+              <div>
+                <strong>Bonifico Bancario</strong>
+                <small>Paghi subito e ricevi accesso immediato al corso via email</small>
+              </div>
+            </div>
+          </label>
+          <label class="pay-radio">
+            <input type="radio" name="metodo_pagamento" value="contrassegno" checked>
+            <div class="pay-radio__box">
+              <span class="pay-radio__icon">&#128230;</span>
+              <div>
+                <strong>Pagamento alla Consegna</strong>
+                <small>Ricevi il materiale a casa e paghi 89&euro; al corriere</small>
+              </div>
+            </div>
+          </label>
+        </div>
+      </div>
+      <button type="submit" class="cta-btn" style="width:100%;border:none;cursor:pointer;font-family:var(--font)">Invia Candidatura — Solo 10 posti</button>
+      <div class="cta-sub">Candidature aperte fino a domani &middot; Ti contattiamo entro 24h</div>
+    </form>
+  </div>
+</section>
+
+<!-- BENEFICI -->
+<section class="sec" style="background:var(--white)">
+  <div class="c">
+    <h2>Perche scegliere <em>questo percorso</em></h2>
+    <div class="benefits__grid">
+      <div class="benefit"><div class="benefit__icon">&#127891;</div><h4>Formazione completa</h4><p>Impari tutto online, con i tuoi tempi, dal tuo divano.</p></div>
+      <div class="benefit"><div class="benefit__icon">&#128188;</div><h4>Inserimento garantito</h4><p>Dopo il test, le aziende sono gia pronte ad assumerti.</p></div>
+      <div class="benefit"><div class="benefit__icon">&#127968;</div><h4>Lavori da casa</h4><p>Niente spostamenti, niente traffico. Solo tu e il tuo computer.</p></div>
+      <div class="benefit"><div class="benefit__icon">&#128176;</div><h4>Stipendio fisso</h4><p>1.500 euro al mese con contratto indeterminato e mensilita extra.</p></div>
+      <div class="benefit"><div class="benefit__icon">&#9200;</div><h4>Solo 4 ore</h4><p>Lavori mezza giornata e ti godi il resto della vita.</p></div>
+      <div class="benefit"><div class="benefit__icon">&#128274;</div><h4>Zero rischi</h4><p>89 euro di investimento per un lavoro stabile. Si ripaga dal primo stipendio.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SMARTWORKING IMAGE -->
+<section class="sec smartwork-sec" style="background:var(--light);text-align:center;padding:40px 24px">
+  <img src="img/smartwork.png" alt="Smartworking" style="max-width:600px;width:100%;margin:0 auto;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.08)">
+  <p style="font-size:14px;color:var(--muted);margin-top:16px;max-width:500px;margin-left:auto;margin-right:auto">Il tuo nuovo ufficio: casa tua. Niente sveglie alle 6, niente traffico, niente capi sul collo. Solo tu, il tuo computer e 4 ore di lavoro tranquillo.</p>
+</section>
+
+<!-- PREZZO -->
+<section class="sec" style="background:var(--white)" id="pagamento">
+  <div class="c">
+    <h2 style="text-align:center">Quanto costa?</h2>
+    <p class="sub" style="text-align:center">Meno di una cena fuori. Per un lavoro che ti cambia la vita.</p>
+    <div class="price-box">
+      <div class="old">Valore reale: &euro;297</div>
+      <div class="current">&euro;89</div>
+      <div class="note">Pagamento unico &middot; Accesso immediato &middot; Inserimento lavorativo incluso</div>
+    </div>
+  </div>
+</section>
+
+<!-- METODI PAGAMENTO -->
+<section class="sec" style="background:var(--light)">
+  <div class="c">
+    <h2>Come pagare</h2>
+    <p class="sub">Due opzioni semplici e sicure. Scegli quella piu comoda per te.</p>
+    <div class="pay__options">
+      <div class="pay__option">
+        <h4><span>&#127974;</span> Bonifico bancario</h4>
+        <p>Effettui il bonifico e ricevi <strong>immediatamente via email</strong> le credenziali per accedere al portale del corso. Inizi subito la formazione.</p>
+      </div>
+      <div class="pay__option">
+        <h4><span>&#128230;</span> Pagamento alla consegna</h4>
+        <p>Pensato per chi non puo fare il bonifico. Un <strong>corriere consegnera a casa tua</strong> il materiale cartaceo del corso. All'interno troverai le <strong>credenziali per accedere al portale online</strong> e iniziare la formazione. Paghi comodamente al corriere alla consegna.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA 2 -->
+<section class="sec" style="background:var(--white);padding:36px 24px">
+  <a href="#iscriviti" class="cta-btn">Iscriviti adesso — Posti quasi esauriti</a>
+  <div class="cta-sub">89&euro; &middot; Compila il modulo &middot; Ti contattiamo entro 24h</div>
+</section>
+
+<!-- TESTIMONIAL -->
+<section class="sec" style="background:var(--light)">
+  <div class="c">
+    <h2>Chi l'ha fatto prima di te</h2>
+    <p class="sub">Centinaia di persone hanno gia cambiato vita con questo percorso.</p>
+    <div class="testi__grid">
+      <div class="testi"><div class="testi__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="testi__text">"Ero scettica, lo ammetto. 89 euro per un corso online? Ma dopo 2 settimane avevo gia il mio contratto. Ora lavoro da casa 4 ore al giorno e finalmente ho uno stipendio fisso. Non ci credo ancora."</p><div class="testi__author">Valentina M.</div><div class="testi__info">32 anni, Roma — assunta in 15 giorni</div></div>
+      <div class="testi"><div class="testi__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="testi__text">"Dopo 2 anni di lavoretti precari, questo corso mi ha dato quello che cercavo: stabilita. Contratto indeterminato, 1.500 euro al mese, lavoro dal divano. I miei figli mi vedono a casa ogni pomeriggio."</p><div class="testi__author">Sara T.</div><div class="testi__info">41 anni, Milano — mamma di 2</div></div>
+      <div class="testi"><div class="testi__stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div><p class="testi__text">"Non avevo esperienza come segretaria. Il corso ti insegna tutto da zero. Dopo il test mi hanno chiamata il giorno dopo. Adesso lavoro per uno studio commercialista senza muovermi da casa."</p><div class="testi__author">Giulia R.</div><div class="testi__info">27 anni, Napoli — prima esperienza</div></div>
+    </div>
+    <div style="margin-top:16px"><img src="img/testimonial.png" alt="Le nostre segretarie" style="border-radius:14px;max-width:100%"></div>
+  </div>
+</section>
+
+<!-- OBIEZIONI -->
+<section class="sec" style="background:var(--white)">
+  <div class="c">
+    <h2>Domande frequenti</h2>
+    <div class="obj"><div class="obj__q" onclick="this.parentElement.classList.toggle('open')">E' una cosa seria? Non e' una truffa?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="obj__a"><p>Assolutamente si. Siamo un ente di formazione che collabora direttamente con aziende italiane che hanno bisogno di segretarie formate. Le aziende non hanno tempo per formare internamente, quindi si affidano a noi. Il nostro interesse e' formarti bene perche la nostra reputazione dipende dalla qualita delle persone che inseriamo.</p></div></div>
+    <div class="obj"><div class="obj__q" onclick="this.parentElement.classList.toggle('open')">Perche devo pagare 89 euro per lavorare?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="obj__a"><p>Gli 89 euro coprono il costo della formazione — il corso, il materiale, il portale e il supporto. Non paghi per il lavoro, paghi per la formazione che ti rende qualificata. Pensala cosi: investi 89 euro e dal primo mese guadagni 1.500 euro. Si ripaga in meno di 2 giorni di lavoro.</p></div></div>
+    <div class="obj"><div class="obj__q" onclick="this.parentElement.classList.toggle('open')">Il corso e' difficile?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="obj__a"><p>No. E' pensato per chiunque, anche senza esperienza. I moduli sono chiari, semplici, passo dopo passo. Il test finale verifica che hai appreso le competenze base. Il 95% delle partecipanti lo supera al primo tentativo.</p></div></div>
+    <div class="obj"><div class="obj__q" onclick="this.parentElement.classList.toggle('open')">Quando inizio a lavorare?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="obj__a"><p>Dipende da quanto velocemente completi il corso. In media le nostre allieve completano la formazione in 1-2 settimane. Dopo aver superato il test, l'inserimento lavorativo avviene entro pochi giorni.</p></div></div>
+    <div class="obj"><div class="obj__q" onclick="this.parentElement.classList.toggle('open')">Posso pagare alla consegna?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="obj__a"><p>Si. Se non puoi fare il bonifico, ti inviamo il materiale cartaceo a casa tramite corriere. All'interno trovi le credenziali per accedere al corso online. Paghi al corriere alla consegna.</p></div></div>
+    <div class="obj"><div class="obj__q" onclick="this.parentElement.classList.toggle('open')">E se non supero il test?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="obj__a"><p>Puoi ripeterlo. Il test e' progettato per verificare le competenze base, non per bocciare. Ti diamo tutto il supporto necessario per superarlo con successo.</p></div></div>
+  </div>
+</section>
+
+<!-- URGENCY -->
+<section class="sec" style="background:var(--light)">
+  <div class="c">
+    <div class="urgency">
+      <div class="urgency__big">Solo 10 posti</div>
+      <p>Le aziende hanno gia fatto richiesta di 10 segretarie. Quando i posti finiscono, le candidature si chiudono. Non riapriamo finche non ci saranno nuove richieste.</p>
+    </div>
+    <div style="margin-top:16px">
+      <div class="counter">
+        <div class="counter__spots" id="spots">7</div>
+        <p>posti ancora disponibili su 10</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GARANZIA -->
+<section class="sec" style="background:var(--white)">
+  <div class="c">
+    <div class="guarantee">
+      <div class="guarantee__icon">&#128170;</div>
+      <h3>La nostra garanzia</h3>
+      <p>Se completi il corso, superi il test e per qualsiasi motivo non ti inseriamo in azienda, <strong>ti rimborsiamo ogni centesimo</strong>. Il rischio e' zero. La promessa e' concreta: ti formiamo e ti facciamo lavorare.</p>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINALE -->
+<section class="sec" style="background:var(--dark);padding:56px 24px;text-align:center;color:#fff">
+  <div class="c">
+    <h2 style="color:#fff;margin-bottom:8px">Non aspettare che i posti finiscano.</h2>
+    <p style="font-size:15px;color:rgba(255,255,255,0.5);margin-bottom:24px;max-width:440px;margin-left:auto;margin-right:auto">89 euro oggi. 1.500 euro al mese da domani. Il lavoro stabile che hai sempre cercato e' a un click di distanza.</p>
+    <a href="#pagamento" class="cta-btn" style="box-shadow:0 8px 32px rgba(212,160,60,0.35)">Candidati ora — Ultimi posti disponibili</a>
+    <div style="display:flex;flex-direction:column;gap:6px;align-items:center;margin-top:20px">
+      <span style="font-size:12px;color:rgba(255,255,255,0.4)">&#10003; Corso online completo</span>
+      <span style="font-size:12px;color:rgba(255,255,255,0.4)">&#10003; Inserimento lavorativo garantito</span>
+      <span style="font-size:12px;color:rgba(255,255,255,0.4)">&#10003; Contratto a tempo indeterminato</span>
+      <span style="font-size:12px;color:rgba(255,255,255,0.4)">&#10003; 1.500&euro;/mese da casa</span>
+      <span style="font-size:12px;color:rgba(255,255,255,0.4)">&#10003; Solo 89&euro; di investimento</span>
+    </div>
+    <p style="font-size:10px;color:rgba(255,255,255,0.15);margin-top:16px">Le candidature chiudono domani. Le aziende non aspettano.</p>
+  </div>
+</section>
+
+<footer>
+  <a href="#">Privacy Policy</a> &middot; <a href="#">Termini e Condizioni</a>
+</footer>
+
+<script>
+// Forza scroll in cima al caricamento
+if(history.scrollRestoration) history.scrollRestoration='manual';
+window.scrollTo(0,0);
+
+// Smooth scroll per link ancora
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click',e=>{
+    e.preventDefault();
+    const t=document.querySelector(a.getAttribute('href'));
+    if(t) t.scrollIntoView({behavior:'smooth',block:'start'});
+  });
+});
+
+// Fake counter decrease
+setInterval(()=>{
+  const el=document.getElementById('spots');
+  let n=parseInt(el.textContent);
+  if(n>2) el.textContent=n-1;
+},45000);
+</script>
+
+</div><!-- end page-wrap -->
+
+<!-- WHATSAPP FLOATING BUTTON -->
+<div style="position:fixed;bottom:24px;right:24px;z-index:999999;width:60px;height:60px;">
+  <a href="https://wa.me/393343828321?text=Ciao%2C%20sono%20interessata%20al%20corso%20per%20segretaria.%20Vorrei%20maggiori%20informazioni!" target="_blank" rel="noopener" style="display:block;width:60px;height:60px;background:#25d366;border-radius:50%;text-align:center;line-height:60px;box-shadow:0 4px 16px rgba(37,211,102,0.4);">
+    <svg style="width:32px;height:32px;vertical-align:middle;fill:#fff;" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><path fill="#ffffff" d="M16.004 0h-.008C7.174 0 0 7.176 0 16.004c0 3.5 1.129 6.742 3.047 9.379L1.054 31.25l6.078-1.95a15.906 15.906 0 008.872 2.696C24.826 31.996 32 24.82 32 15.996 32 7.176 24.826 0 16.004 0zm9.342 22.618c-.393 1.107-1.947 2.026-3.188 2.295-.848.18-1.955.324-5.684-1.221-4.773-1.977-7.843-6.822-8.082-7.14-.228-.318-1.923-2.562-1.923-4.887 0-2.326 1.217-3.468 1.65-3.94.393-.43 1.045-.607 1.67-.607.203 0 .384.01.547.019.472.02.709.048 1.021.789.393.928 1.35 3.293 1.469 3.533.12.24.24.556.077.874-.152.328-.285.474-.525.746-.24.272-.468.48-.708.773-.218.26-.464.537-.194.97.27.422 1.199 1.977 2.574 3.203 1.768 1.578 3.257 2.068 3.72 2.296.354.175.776.142 1.057-.152.355-.374.793-.994 1.238-1.605.318-.435.717-.49 1.107-.33.393.153 2.495 1.177 2.924 1.391.43.214.714.322.82.498.104.178.104 1.025-.289 2.133z"/></svg>
+  </a>
+</div>
+
+</body>
+</html>
