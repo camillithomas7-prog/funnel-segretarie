@@ -15,6 +15,7 @@ try { $pdo->exec("ALTER TABLE candidature ADD COLUMN note TEXT"); } catch(PDOExc
 try { $pdo->exec("ALTER TABLE candidature ADD COLUMN provincia VARCHAR(10) DEFAULT ''"); } catch(PDOException $e) {}
 try { $pdo->exec("ALTER TABLE candidature ADD COLUMN assegnato VARCHAR(50) DEFAULT ''"); } catch(PDOException $e) {}
 try { $pdo->exec("ALTER TABLE candidature ADD COLUMN prossimo_contatto DATETIME DEFAULT NULL"); } catch(PDOException $e) {}
+try { $pdo->exec("ALTER TABLE candidature ADD COLUMN nr_count INT DEFAULT 0"); } catch(PDOException $e) {}
 // Operatori table
 try { $pdo->exec("CREATE TABLE IF NOT EXISTS operatori (id INT AUTO_INCREMENT PRIMARY KEY, nome VARCHAR(50) NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"); } catch(PDOException $e) {}
 // Log attivita table
@@ -36,9 +37,19 @@ $logged = !empty($_SESSION[$session_key]);
 // Actions
 $qs = isset($_GET['filter'])?'?filter='.$_GET['filter']:'';
 if ($logged && isset($_POST['update_stato'])) {
-    $old = $pdo->prepare("SELECT stato FROM candidature WHERE id=?"); $old->execute([$_POST['cid']]); $oldStato=$old->fetchColumn();
-    $pdo->prepare("UPDATE candidature SET stato=? WHERE id=?")->execute([$_POST['nuovo_stato'], $_POST['cid']]);
-    $pdo->prepare("INSERT INTO log_attivita (lead_id,operatore,azione) VALUES (?,?,?)")->execute([$_POST['cid'],$_POST['operatore_azione']??'','Stato: '.$oldStato.' → '.$_POST['nuovo_stato']]);
+    $old = $pdo->prepare("SELECT stato,nr_count FROM candidature WHERE id=?"); $old->execute([$_POST['cid']]); $oldRow=$old->fetch(PDO::FETCH_ASSOC);
+    $oldStato = $oldRow['stato'] ?? '';
+    $newStato = $_POST['nuovo_stato'];
+    $nr = (int)($oldRow['nr_count'] ?? 0);
+    if ($newStato === 'non_risponde') {
+        $nr++;
+        $pdo->prepare("UPDATE candidature SET stato=?, nr_count=? WHERE id=?")->execute([$newStato, $nr, $_POST['cid']]);
+        $pdo->prepare("INSERT INTO log_attivita (lead_id,operatore,azione) VALUES (?,?,?)")->execute([$_POST['cid'],$_POST['operatore_azione']??'','Tentativo NR #'.$nr.' — non risponde']);
+    } else {
+        if (in_array($newStato, ['contattato','confermato','completato'], true)) $nr = 0;
+        $pdo->prepare("UPDATE candidature SET stato=?, nr_count=? WHERE id=?")->execute([$newStato, $nr, $_POST['cid']]);
+        $pdo->prepare("INSERT INTO log_attivita (lead_id,operatore,azione) VALUES (?,?,?)")->execute([$_POST['cid'],$_POST['operatore_azione']??'','Stato: '.$oldStato.' → '.$newStato]);
+    }
     header('Location: admin.php'.$qs.'#lead-'.$_POST['cid']); exit;
 }
 if ($logged && isset($_POST['update_note'])) {
@@ -726,7 +737,8 @@ $pdf_files = glob($upload_dir_log . '*.pdf');
       </form>
     </div>
     <div class="lead__badges">
-      <span class="badge" style="background:<?=$sc?>20;color:<?=$sc?>"><?=$stato_label[$c['stato']]??ucfirst($c['stato'])?></span>
+      <span class="badge" style="background:<?=$sc?>20;color:<?=$sc?>"><?=$stato_label[$c['stato']]??ucfirst($c['stato'])?><?php if((int)($c['nr_count']??0)>0 && $c['stato']==='non_risponde'): ?> · NR <?=(int)$c['nr_count']?><?php endif; ?></span>
+      <?php if((int)($c['nr_count']??0)>0 && $c['stato']!=='non_risponde'): ?><span class="badge" style="background:#fee2e2;color:#b91c1c" title="Tentativi NR storici">NR <?=(int)$c['nr_count']?></span><?php endif; ?>
       <?php if(!empty($c['metodo_pagamento'])): ?><span class="badge" style="background:#f0f0f0;color:#666"><?=ucfirst($c['metodo_pagamento'])?></span><?php endif; ?>
       <?php if(!empty($c['assegnato'])): ?><span class="badge badge-op"><?=htmlspecialchars($c['assegnato'])?></span><?php endif; ?>
     </div>
