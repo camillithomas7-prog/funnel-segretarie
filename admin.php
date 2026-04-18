@@ -799,20 +799,34 @@ function globalSearch(q){
 }
 document.addEventListener('click',function(e){if(!e.target.closest('.search-bar'))document.getElementById('search-results').classList.remove('open')});
 
+// Salva scroll prima di ogni submit form (per evitare salto dopo redirect)
+document.addEventListener('submit',function(e){
+  if(e.target.tagName==='FORM'){
+    sessionStorage.setItem('adminScroll',window.scrollY);
+    sessionStorage.setItem('adminFromSubmit','1');
+  }
+},true);
+
 // Auto-refresh pagina ogni 60 secondi per aggiornare reminder
 setInterval(function(){
-  // Solo se non si sta scrivendo in un input
-  if(document.activeElement.tagName!=='INPUT'&&document.activeElement.tagName!=='SELECT'){
-    var scroll=window.scrollY;
-    sessionStorage.setItem('adminScroll',scroll);
+  if(document.activeElement.tagName!=='INPUT'&&document.activeElement.tagName!=='SELECT'&&document.activeElement.tagName!=='TEXTAREA'){
+    sessionStorage.setItem('adminScroll',window.scrollY);
     location.reload();
   }
 },60000);
-// Ripristina scroll dopo reload
-if(sessionStorage.getItem('adminScroll')&&!location.hash){
-  window.scrollTo(0,parseInt(sessionStorage.getItem('adminScroll')));
-  sessionStorage.removeItem('adminScroll');
-}
+
+// Ripristina scroll dopo reload o POST redirect
+(function(){
+  var s=sessionStorage.getItem('adminScroll');
+  var fromSubmit=sessionStorage.getItem('adminFromSubmit');
+  if(s && (fromSubmit || !location.hash)){
+    // Disabilita lo scroll automatico all'anchor del browser
+    if('scrollRestoration' in history) history.scrollRestoration='manual';
+    setTimeout(function(){window.scrollTo(0,parseInt(s))},0);
+    sessionStorage.removeItem('adminScroll');
+    sessionStorage.removeItem('adminFromSubmit');
+  }
+})();
 
 // Notifica browser quando c'è un reminder
 if('Notification' in window && Notification.permission==='default'){Notification.requestPermission()}
