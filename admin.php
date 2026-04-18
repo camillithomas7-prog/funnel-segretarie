@@ -11,8 +11,8 @@ function wa_link($phone, $text='') {
     $d = preg_replace('/[^0-9]/','', (string)$phone);
     if (substr($d,0,2)==='00') $d = substr($d,2);
     if (preg_match('/^3\d{8,9}$/', $d)) $d = '39'.$d;
-    $url = 'https://wa.me/'.$d;
-    if ($text !== '') $url .= '?text='.rawurlencode($text);
+    $url = 'https://web.whatsapp.com/send?phone='.$d;
+    if ($text !== '') $url .= '&text='.rawurlencode($text);
     return $url;
 }
 
