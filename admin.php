@@ -7,6 +7,14 @@ $project_name = 'Corso Segretarie';
 $accent = '#1a3a6b';
 $session_key = 'admin_logged_seg';
 $reminder_template = "Buongiorno {NOME}, le scriviamo dal Corso Segretarie.\n\nAbbiamo provato a contattarla al telefono nei giorni scorsi ma non siamo riusciti a raggiungerla. Si era candidata per partecipare al nostro corso e volevamo ricordarle che la promozione attiva scade tra 2 giorni.\n\nSe è ancora interessata, può rispondere a questo messaggio indicandoci un orario comodo: la richiameremo volentieri per fissare una chiamata e spiegarle tutti i dettagli. Proveremo comunque a ricontattarla noi nei prossimi giorni, prima della scadenza della promozione.\n\nGrazie e buona giornata!";
+function wa_link($phone, $text='') {
+    $d = preg_replace('/[^0-9]/','', (string)$phone);
+    if (substr($d,0,2)==='00') $d = substr($d,2);
+    if (preg_match('/^3\d{8,9}$/', $d)) $d = '39'.$d;
+    $url = 'https://wa.me/'.$d;
+    if ($text !== '') $url .= '?text='.rawurlencode($text);
+    return $url;
+}
 
 // Auto-add missing columns
 try { $pdo->exec("ALTER TABLE candidature ADD COLUMN fonte VARCHAR(20) DEFAULT 'form'"); } catch(PDOException $e) {}
@@ -386,7 +394,7 @@ body{font-family:'Inter',sans-serif;background:#f5f5f7;color:#333;min-height:100
         </div>
         <div class="reminder-item__actions">
           <a href="tel:<?=htmlspecialchars($r['telefono'])?>" style="background:#059669">Chiama</a>
-          <a href="https://web.whatsapp.com/send?phone=<?=preg_replace('/[^0-9]/','',($r['telefono']??''))?>" target="_blank" style="background:#25d366">WA</a>
+          <a href="<?=wa_link($r['telefono']??'')?>" target="_blank" style="background:#25d366">WA</a>
           <a href="#lead-<?=$r['id']?>" style="background:<?=$accent?>" onclick="document.getElementById('lead-<?=$r['id']?>').scrollIntoView({block:'center'})">Vai</a>
         </div>
       </div>
@@ -531,7 +539,7 @@ $pdf_files = glob($upload_dir_log . '*.pdf');
       </form>
 
       <!-- WA + Elimina -->
-      <a href="https://web.whatsapp.com/send?phone=<?=preg_replace('/[^0-9]/','',($o['telefono']??''))?>" target="_blank" class="btn-wa"><svg width="10" height="10" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>WA</a>
+      <a href="<?=wa_link($o['telefono']??'')?>" target="_blank" class="btn-wa"><svg width="10" height="10" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>WA</a>
       <?php if(!empty($pdf_files)): ?>
       <a href="uploads/<?=urlencode(basename($pdf_files[0]))?>" target="_blank" style="padding:4px 8px;background:#ef4444;color:#fff;border-radius:5px;font-size:9px;font-weight:700;text-decoration:none">PDF</a>
       <?php endif; ?>
@@ -790,9 +798,9 @@ $pdf_files = glob($upload_dir_log . '*.pdf');
         <input type="text" name="note" placeholder="Nota..." value="<?=htmlspecialchars($c['note']??'')?>">
         <button type="submit" name="update_note" value="1" class="btn-sm btn-blue">Nota</button>
       </form>
-      <?php $wa_phone = preg_replace('/[^0-9]/','',($c['telefono']??'')); $reminder_msg = str_replace('{NOME}', trim($c['nome']??''), $reminder_template); ?>
-      <a href="https://web.whatsapp.com/send?phone=<?=$wa_phone?>" target="_blank" class="btn-wa"><svg width="10" height="10" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>WA</a>
-      <a href="https://web.whatsapp.com/send?phone=<?=$wa_phone?>&text=<?=rawurlencode($reminder_msg)?>" target="_blank" class="btn-wa-r" title="Invia messaggio di reminder promozione"><svg width="10" height="10" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>Reminder</a>
+      <?php $reminder_msg = str_replace('{NOME}', trim($c['nome']??''), $reminder_template); ?>
+      <a href="<?=wa_link($c['telefono']??'')?>" target="_blank" class="btn-wa"><svg width="10" height="10" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>WA</a>
+      <a href="<?=wa_link($c['telefono']??'', $reminder_msg)?>" target="_blank" class="btn-wa-r" title="Invia messaggio di reminder promozione"><svg width="10" height="10" viewBox="0 0 24 24" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg>Reminder</a>
       <form method="POST" onsubmit="return confirm('Eliminare?')" style="display:inline">
         <input type="hidden" name="cid" value="<?=$c['id']?>">
         <button type="submit" name="elimina" class="btn-sm btn-red">X</button>
