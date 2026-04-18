@@ -56,6 +56,12 @@ if ($logged && isset($_POST['update_prossimo'])) {
     $pdo->prepare("UPDATE candidature SET prossimo_contatto=? WHERE id=?")->execute([$val, $_POST['cid']]);
     header('Location: admin.php'.$qs.'#lead-'.$_POST['cid']); exit;
 }
+if ($logged && isset($_POST['update_indirizzo_lead'])) {
+    $pdo->prepare("UPDATE candidature SET indirizzo=?, cap=?, citta=?, provincia=? WHERE id=?")
+        ->execute([trim($_POST['indirizzo']??''), trim($_POST['cap']??''), trim($_POST['citta_lead']??''), trim($_POST['provincia_lead']??''), $_POST['cid']]);
+    $pdo->prepare("INSERT INTO log_attivita (lead_id,operatore,azione) VALUES (?,?,?)")->execute([$_POST['cid'],$_POST['operatore_azione']??'','Indirizzo aggiornato']);
+    header('Location: admin.php'.$qs.'#lead-'.$_POST['cid']); exit;
+}
 if ($logged && isset($_POST['add_manual'])) {
     $tel = trim($_POST['m_telefono']??'');
     $tel_clean = preg_replace('/[^0-9]/', '', $tel);
@@ -693,6 +699,22 @@ $pdf_files = glob($upload_dir_log . '*.pdf');
     <div class="lead__fields">
       <div class="lead__field"><div class="lead__field-label">Telefono</div><div class="lead__field-value"><a href="tel:<?=htmlspecialchars($c['telefono'])?>"><?=htmlspecialchars($c['telefono'])?></a></div></div>
       <div class="lead__field"><div class="lead__field-label">Citta</div><div class="lead__field-value"><?=htmlspecialchars(($c['citta']??'').(!empty($c['provincia'])?' ('.$c['provincia'].')':''))?></div></div>
+    </div>
+    <div class="lead__field" style="background:#fafafa;border:1px solid #eee;border-radius:6px;padding:6px 8px;margin-bottom:6px">
+      <div style="font-size:9px;color:#888;text-transform:uppercase;font-weight:700;margin-bottom:4px">Indirizzo</div>
+      <?php if(!empty($c['indirizzo']) || !empty($c['cap'])): ?>
+        <div style="font-size:12px;color:#333;margin-bottom:4px"><?=htmlspecialchars($c['indirizzo']??'')?><?=!empty($c['cap'])?', '.htmlspecialchars($c['cap']):''?><?=!empty($c['citta'])?' '.htmlspecialchars($c['citta']):''?><?=!empty($c['provincia'])?' ('.htmlspecialchars($c['provincia']).')':''?></div>
+      <?php else: ?>
+        <div style="font-size:11px;color:#bbb;margin-bottom:4px">Nessun indirizzo inserito</div>
+      <?php endif; ?>
+      <form method="POST" style="display:flex;gap:4px;flex-wrap:wrap;align-items:center">
+        <input type="hidden" name="cid" value="<?=$c['id']?>">
+        <input type="text" name="indirizzo" placeholder="Via e numero" value="<?=htmlspecialchars($c['indirizzo']??'')?>" style="flex:2;min-width:140px;padding:5px 7px;border:1px solid #e0e0e0;border-radius:5px;font-size:11px;font-family:inherit;outline:none">
+        <input type="text" name="cap" placeholder="CAP" value="<?=htmlspecialchars($c['cap']??'')?>" maxlength="5" style="width:60px;padding:5px 7px;border:1px solid #e0e0e0;border-radius:5px;font-size:11px;font-family:inherit;outline:none">
+        <input type="text" name="citta_lead" placeholder="Citta" value="<?=htmlspecialchars($c['citta']??'')?>" style="flex:1;min-width:100px;padding:5px 7px;border:1px solid #e0e0e0;border-radius:5px;font-size:11px;font-family:inherit;outline:none">
+        <input type="text" name="provincia_lead" placeholder="Prov" value="<?=htmlspecialchars($c['provincia']??'')?>" maxlength="2" style="width:50px;padding:5px 7px;border:1px solid #e0e0e0;border-radius:5px;font-size:11px;font-family:inherit;outline:none;text-transform:uppercase">
+        <button type="submit" name="update_indirizzo_lead" value="1" class="btn-sm btn-blue">Salva</button>
+      </form>
     </div>
     <div class="lead__badges">
       <span class="badge" style="background:<?=$sc?>20;color:<?=$sc?>"><?=$stato_label[$c['stato']]??ucfirst($c['stato'])?></span>
