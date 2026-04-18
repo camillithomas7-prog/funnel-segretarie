@@ -255,7 +255,10 @@ foreach ($op_names as $op) {
 body{font-family:'Inter',sans-serif;background:#f5f5f7;color:#333;min-height:100vh}
 .container{max-width:960px;margin:0 auto;padding:20px}
 .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;flex-wrap:wrap;gap:8px}
-.header h1{font-size:20px;font-weight:800;color:#111}
+.header h1{font-size:20px;font-weight:800;color:#111;display:inline-flex;align-items:center;gap:10px;flex-wrap:wrap}
+.btn-copy-site{background:<?=$accent?>;color:#fff;border:none;padding:5px 10px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;letter-spacing:.3px;transition:all .15s;font-family:inherit}
+.btn-copy-site:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.btn-copy-site.copied{background:#22c55e}
 .header-links{display:flex;gap:12px;align-items:center}
 .header-links a{font-size:12px;text-decoration:none;padding:5px 12px;border-radius:6px}
 .tab-link{color:#888;background:#fff;border:1px solid #e8e8e8}
@@ -352,8 +355,9 @@ body{font-family:'Inter',sans-serif;background:#f5f5f7;color:#333;min-height:100
 @media(max-width:600px){.container{padding:10px}.lead__fields{grid-template-columns:1fr}.stats{grid-template-columns:repeat(3,1fr)}.lead__actions{flex-direction:column;align-items:stretch}.lead__actions form{display:flex;gap:3px}}
 </style></head><body>
 <div class="container">
+  <?php $site_url = (!empty($_SERVER['HTTPS']) ? 'https' : 'http').'://'.$_SERVER['HTTP_HOST'].'/'; ?>
   <div class="header">
-    <h1><?=$project_name?></h1>
+    <h1><?=$project_name?> <button type="button" class="btn-copy-site" onclick="copySite(this,'<?=htmlspecialchars($site_url,ENT_QUOTES)?>')" title="Copia il link del sito">📋 Copia Link Sito</button></h1>
     <div class="header-links">
       <a href="?tab=leads" class="tab-link <?=$tab==='leads'?'active':''?>">Lead</a>
       <a href="?tab=team" class="tab-link <?=$tab==='team'?'active':''?>">Team</a>
@@ -817,6 +821,11 @@ $pdf_files = glob($upload_dir_log . '*.pdf');
 <?php endif; ?>
 </div>
 <script>
+function copySite(btn,url){
+  var done=function(){var orig=btn.innerHTML;btn.innerHTML='✓ Copiato!';btn.classList.add('copied');setTimeout(function(){btn.innerHTML=orig;btn.classList.remove('copied')},1500)};
+  if(navigator.clipboard && navigator.clipboard.writeText){navigator.clipboard.writeText(url).then(done).catch(function(){prompt('Copia manualmente:',url)})}
+  else {var ta=document.createElement('textarea');ta.value=url;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');done()}catch(e){prompt('Copia manualmente:',url)}document.body.removeChild(ta)}
+}
 if(location.hash){var el=document.querySelector(location.hash);if(el){el.scrollIntoView({block:'center'});el.style.boxShadow='0 0 0 3px rgba(0,0,0,.08)';setTimeout(function(){el.style.boxShadow=''},2000)}}
 
 var searchTimer;
