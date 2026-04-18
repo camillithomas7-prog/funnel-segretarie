@@ -67,6 +67,12 @@ if ($logged && isset($_POST['update_prossimo'])) {
     $pdo->prepare("UPDATE candidature SET prossimo_contatto=? WHERE id=?")->execute([$val, $_POST['cid']]);
     header('Location: admin.php'.$qs.'#lead-'.$_POST['cid']); exit;
 }
+if ($logged && isset($_POST['update_anagrafica'])) {
+    $pdo->prepare("UPDATE candidature SET nome=?, cognome=?, email=?, telefono=? WHERE id=?")
+        ->execute([trim($_POST['nome']??''), trim($_POST['cognome']??''), trim($_POST['email']??''), trim($_POST['telefono']??''), $_POST['cid']]);
+    $pdo->prepare("INSERT INTO log_attivita (lead_id,operatore,azione) VALUES (?,?,?)")->execute([$_POST['cid'],$_POST['operatore_azione']??'','Anagrafica aggiornata']);
+    header('Location: admin.php'.$qs.'#lead-'.$_POST['cid']); exit;
+}
 if ($logged && isset($_POST['update_indirizzo_lead'])) {
     $pdo->prepare("UPDATE candidature SET indirizzo=?, cap=?, citta=?, provincia=? WHERE id=?")
         ->execute([trim($_POST['indirizzo']??''), trim($_POST['cap']??''), trim($_POST['citta_lead']??''), trim($_POST['provincia_lead']??''), $_POST['cid']]);
@@ -707,12 +713,24 @@ $pdf_files = glob($upload_dir_log . '*.pdf');
   ?>
   <div class="lead <?=$is_scaduto?'scaduto':''?>" id="lead-<?=$c['id']?>" style="border-left-color:<?=$sc?>">
     <div class="lead__top">
-      <div>
-        <div class="lead__name">
-          <?php if($is_wa): ?><svg class="wa-icon" viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg><?php endif; ?>
-          <?=htmlspecialchars($c['nome'].' '.$c['cognome'])?>
+      <div style="flex:1;min-width:0">
+        <div id="nview-<?=$c['id']?>">
+          <div class="lead__name">
+            <?php if($is_wa): ?><svg class="wa-icon" viewBox="0 0 24 24" fill="#25d366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/></svg><?php endif; ?>
+            <?=htmlspecialchars($c['nome'].' '.$c['cognome'])?>
+            <button type="button" onclick="document.getElementById('nedit-<?=$c['id']?>').style.display='flex';document.getElementById('nview-<?=$c['id']?>').style.display='none'" title="Modifica anagrafica" style="margin-left:6px;background:transparent;border:none;cursor:pointer;color:#999;padding:2px 4px;font-size:12px;vertical-align:middle">✏</button>
+          </div>
+          <?php if(!empty($c['email'])): ?><div class="lead__email"><?=htmlspecialchars($c['email'])?></div><?php endif; ?>
         </div>
-        <?php if(!empty($c['email'])): ?><div class="lead__email"><?=htmlspecialchars($c['email'])?></div><?php endif; ?>
+        <form method="POST" id="nedit-<?=$c['id']?>" style="display:none;gap:4px;flex-wrap:wrap;align-items:center">
+          <input type="hidden" name="cid" value="<?=$c['id']?>">
+          <input type="text" name="nome" value="<?=htmlspecialchars($c['nome']??'')?>" placeholder="Nome" style="flex:1;min-width:90px;padding:5px 7px;border:1px solid #e0e0e0;border-radius:5px;font-size:12px;font-family:inherit;outline:none">
+          <input type="text" name="cognome" value="<?=htmlspecialchars($c['cognome']??'')?>" placeholder="Cognome" style="flex:1;min-width:90px;padding:5px 7px;border:1px solid #e0e0e0;border-radius:5px;font-size:12px;font-family:inherit;outline:none">
+          <input type="email" name="email" value="<?=htmlspecialchars($c['email']??'')?>" placeholder="Email" style="flex:1.5;min-width:140px;padding:5px 7px;border:1px solid #e0e0e0;border-radius:5px;font-size:12px;font-family:inherit;outline:none">
+          <input type="text" name="telefono" value="<?=htmlspecialchars($c['telefono']??'')?>" placeholder="Telefono" style="flex:1;min-width:110px;padding:5px 7px;border:1px solid #e0e0e0;border-radius:5px;font-size:12px;font-family:inherit;outline:none">
+          <button type="submit" name="update_anagrafica" value="1" class="btn-sm btn-blue">Salva</button>
+          <button type="button" onclick="document.getElementById('nedit-<?=$c['id']?>').style.display='none';document.getElementById('nview-<?=$c['id']?>').style.display='block'" class="btn-sm" style="background:#eee;color:#333">Annulla</button>
+        </form>
       </div>
       <div class="lead__date">#<?=$c['id']?> · <?=date('d/m/Y H:i', strtotime($c['created_at']))?></div>
     </div>
