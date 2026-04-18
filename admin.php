@@ -579,6 +579,15 @@ $pdf_files = glob($upload_dir_log . '*.pdf');
   <h2 style="font-size:16px;color:#111;margin-bottom:4px">Prodotto Digitale</h2>
   <p style="font-size:12px;color:#888;margin-bottom:14px">Carica il PDF del prodotto per la stampa e spedizione</p>
 
+  <div style="background:<?=$accent?>10;border:1px solid <?=$accent?>40;border-radius:12px;padding:16px 18px;margin-bottom:16px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="<?=$accent?>" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM20 14v3M14 20h3M20 20v1"/></svg>
+    <div style="flex:1;min-width:200px">
+      <div style="font-size:14px;font-weight:700;color:#111;margin-bottom:2px">Riepilogo iscrizione (A4) con QR portale</div>
+      <div style="font-size:12px;color:#666">Foglio stampabile da inserire nel pacco: benvenuto + contenuto + QR per accedere al portale corsi</div>
+    </div>
+    <a href="riepilogo.php" target="_blank" style="padding:10px 18px;background:<?=$accent?>;color:#fff;border-radius:8px;font-size:12px;font-weight:700;text-decoration:none">Apri / Stampa</a>
+  </div>
+
   <form method="POST" enctype="multipart/form-data" style="background:#fff;border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.04);margin-bottom:16px;border:2px dashed #e0e0e0">
     <div style="text-align:center;padding:20px 0">
       <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#888" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="12" y1="18" x2="12" y2="12"/><line x1="9" y1="15" x2="15" y2="15"/></svg>
