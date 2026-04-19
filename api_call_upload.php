@@ -32,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && empty($_POST) && empty($_FILES)
     j_out(['ok'=>false,'error'=>'POST troppo grande (CONTENT_LENGTH='.$_SERVER['CONTENT_LENGTH'].'). Alza post_max_size in php.ini/hPanel.'], 413);
 }
 
-$pdo = getDB();
+if (!isset($pdo)) j_out(['ok'=>false,'error'=>'$pdo non definito in config.php']);
 $pdo->exec("CREATE TABLE IF NOT EXISTS chiamate_registrate (
     id INT AUTO_INCREMENT PRIMARY KEY,
     lead_id INT NOT NULL,

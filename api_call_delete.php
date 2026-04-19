@@ -26,7 +26,7 @@ foreach ($_SESSION as $k => $v) {
 }
 if (!$authed) { j_out(['ok'=>false,'error'=>'Not authed'], 401); }
 
-$pdo = getDB();
+if (!isset($pdo)) j_out(['ok'=>false,'error'=>'$pdo non definito in config.php']);
 $id = (int)($_POST['id'] ?? $_GET['id'] ?? 0);
 if (!$id) j_out(['ok'=>false,'error'=>'Missing id']);
 
