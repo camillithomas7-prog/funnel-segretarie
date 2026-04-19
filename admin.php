@@ -981,9 +981,15 @@ async function toggleRec(leadId, btn){
       fd.append('durata',durata);
       try{
         var r=await fetch('api_call_upload.php',{method:'POST',credentials:'same-origin',body:fd});
-        var j=await r.json();
-        if(j.ok){sessionStorage.setItem('adminScrollY',window.scrollY);location.hash='lead-'+leadId;location.reload()}
-        else{alert('Errore: '+(j.error||'sconosciuto'));btn.innerHTML='🎙️ Registra Chiamata';btn.disabled=false}
+        var txt=await r.text();
+        var j; try{j=JSON.parse(txt)}catch(_){j=null}
+        if(j && j.ok){sessionStorage.setItem('adminScrollY',window.scrollY);location.hash='lead-'+leadId;location.reload()}
+        else{
+          var msg=j? (j.error||'sconosciuto') : ('HTTP '+r.status+' — '+txt.substring(0,300));
+          alert('Errore upload:\n'+msg);
+          console.error('Upload raw response:', txt);
+          btn.innerHTML='🎙️ Registra Chiamata';btn.disabled=false;
+        }
       }catch(e){alert('Errore upload: '+e.message);btn.innerHTML='🎙️ Registra Chiamata';btn.disabled=false}
       __rec=null;
     };
