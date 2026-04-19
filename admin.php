@@ -983,7 +983,7 @@ async function toggleRec(leadId, btn){
         var r=await fetch('api_call_upload.php',{method:'POST',credentials:'same-origin',body:fd});
         var txt=await r.text();
         var j; try{j=JSON.parse(txt)}catch(_){j=null}
-        if(j && j.ok){sessionStorage.setItem('adminScrollY',window.scrollY);location.hash='lead-'+leadId;location.reload()}
+        if(j && j.ok){__rec=null;sessionStorage.setItem('adminScrollY',window.scrollY);location.hash='lead-'+leadId;location.reload();return}
         else{
           var msg=j? (j.error||'sconosciuto') : ('HTTP '+r.status+' — '+txt.substring(0,300));
           alert('Errore upload:\n'+msg);
