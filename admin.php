@@ -25,6 +25,8 @@ try { $pdo->exec("ALTER TABLE candidature ADD COLUMN provincia VARCHAR(10) DEFAU
 try { $pdo->exec("ALTER TABLE candidature ADD COLUMN assegnato VARCHAR(50) DEFAULT ''"); } catch(PDOException $e) {}
 try { $pdo->exec("ALTER TABLE candidature ADD COLUMN prossimo_contatto DATETIME DEFAULT NULL"); } catch(PDOException $e) {}
 try { $pdo->exec("ALTER TABLE candidature ADD COLUMN nr_count INT DEFAULT 0"); } catch(PDOException $e) {}
+try { $pdo->exec("CREATE TABLE IF NOT EXISTS chiamate_registrate (id INT AUTO_INCREMENT PRIMARY KEY, lead_id INT NOT NULL, operatore VARCHAR(50) DEFAULT '', filename VARCHAR(255) NOT NULL, durata INT DEFAULT 0, size_bytes BIGINT DEFAULT 0, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, INDEX idx_lead (lead_id)) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"); } catch(PDOException $e) {}
+if (!is_dir(__DIR__.'/uploads/calls')) @mkdir(__DIR__.'/uploads/calls', 0755, true);
 // Operatori table
 try { $pdo->exec("CREATE TABLE IF NOT EXISTS operatori (id INT AUTO_INCREMENT PRIMARY KEY, nome VARCHAR(50) NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"); } catch(PDOException $e) {}
 // Log attivita table
@@ -240,6 +242,12 @@ $da_ricontattare = $pdo->query("SELECT COUNT(*) FROM candidature WHERE stato='da
 $scaduti = $pdo->query("SELECT COUNT(*) FROM candidature WHERE prossimo_contatto IS NOT NULL AND prossimo_contatto < NOW() AND stato NOT IN ('completato','annullato')")->fetchColumn();
 $leads = $pdo->query("SELECT * FROM candidature $where ORDER BY created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
 
+$recs_by_lead = [];
+try {
+    $_rs = $pdo->query("SELECT * FROM chiamate_registrate ORDER BY created_at DESC");
+    while ($_r = $_rs->fetch(PDO::FETCH_ASSOC)) { $recs_by_lead[$_r['lead_id']][] = $_r; }
+} catch (Exception $e) {}
+
 // Stats per operatore
 $op_stats = [];
 foreach ($op_names as $op) {
@@ -306,6 +314,19 @@ body{font-family:'Inter',sans-serif;background:#f5f5f7;color:#333;min-height:100
 .btn-wa{background:#25d366;color:#fff;text-decoration:none;padding:4px 8px;border-radius:5px;font-size:9px;font-weight:700;display:inline-flex;align-items:center;gap:3px}
 .btn-wa-r{background:#dc2626;color:#fff;text-decoration:none;padding:4px 8px;border-radius:5px;font-size:9px;font-weight:700;display:inline-flex;align-items:center;gap:3px;white-space:nowrap}
 .btn-wa-r:hover{background:#b91c1c}
+.lead__recs{margin-top:8px;padding-top:8px;border-top:1px dashed #eee}
+.rec-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.btn-rec{background:#dc2626;color:#fff;border:none;padding:6px 12px;border-radius:6px;font-size:11px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:5px;font-family:inherit}
+.btn-rec:hover{background:#b91c1c}
+.btn-rec.recording{background:#7f1d1d;animation:pulse-rec 1.2s infinite}
+.btn-rec:disabled{opacity:.6;cursor:wait}
+@keyframes pulse-rec{0%,100%{box-shadow:0 0 0 0 rgba(220,38,38,.6)}50%{box-shadow:0 0 0 10px rgba(220,38,38,0)}}
+.rec-item{display:flex;align-items:center;gap:6px;padding:3px 0;font-size:11px;color:#666}
+.rec-item audio{height:30px;flex:1;min-width:0;max-width:280px}
+.rec-item__meta{white-space:nowrap;font-size:10px;color:#999}
+.rec-item__dl{color:#06b6d4;text-decoration:none;font-size:13px;padding:2px 4px}
+.rec-item__del{background:transparent;border:none;cursor:pointer;color:#999;padding:2px 4px;font-size:12px}
+.rec-item__del:hover{color:#ef4444}
 .empty{text-align:center;padding:40px;color:#aaa;font-size:13px}
 .log{margin-top:6px;border-top:1px solid #f0f0f0;padding-top:6px}
 .log-item{font-size:9px;color:#aaa;padding:1px 0}
@@ -810,6 +831,19 @@ $pdf_files = glob($upload_dir_log . '*.pdf');
         <button type="submit" name="elimina" class="btn-sm btn-red">X</button>
       </form>
     </div>
+    <div class="lead__recs">
+      <div class="rec-row">
+        <button type="button" class="btn-rec" onclick="toggleRec(<?=$c['id']?>,this)">🎙️ Registra Chiamata</button>
+      </div>
+      <?php foreach (($recs_by_lead[$c['id']] ?? []) as $rec): ?>
+        <div class="rec-item" id="rec-<?=$rec['id']?>">
+          <audio controls preload="none" src="uploads/calls/<?=htmlspecialchars($rec['filename'])?>"></audio>
+          <div class="rec-item__meta"><?=date('d/m H:i', strtotime($rec['created_at']))?> · <?=gmdate('i:s', (int)$rec['durata'])?></div>
+          <a class="rec-item__dl" href="uploads/calls/<?=htmlspecialchars($rec['filename'])?>" download title="Scarica">⬇</a>
+          <button type="button" class="rec-item__del" onclick="delRec(<?=$rec['id']?>)" title="Elimina">🗑</button>
+        </div>
+      <?php endforeach; ?>
+    </div>
     <?php if(!empty($logs)): ?>
     <div class="log">
       <?php foreach($logs as $l): ?><div class="log-item"><?=date('d/m H:i',strtotime($l['created_at']))?> <?php if($l['operatore']): ?><b><?=htmlspecialchars($l['operatore'])?></b> — <?php endif; ?><?=htmlspecialchars($l['azione'])?></div><?php endforeach; ?>
@@ -911,5 +945,65 @@ if(reminderBar && 'Notification' in window && Notification.permission==='granted
 }
 // Cambia titolo pagina se ci sono reminder
 if(reminderBar){document.title='(!) '+document.title}
+
+// === CALL RECORDING ===
+var __rec=null;
+async function toggleRec(leadId, btn){
+  if(__rec){
+    if(__rec.leadId!==leadId){alert('Ferma prima la registrazione del lead #'+__rec.leadId);return}
+    __rec.recorder.stop();return;
+  }
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){alert('Browser non supporta la registrazione audio');return}
+  try{
+    var stream=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true}});
+    var opts={audioBitsPerSecond:32000};
+    try{opts.mimeType='audio/webm;codecs=opus'}catch(e){}
+    var recorder=new MediaRecorder(stream, opts);
+    var chunks=[],startTime=Date.now();
+    recorder.ondataavailable=function(e){if(e.data&&e.data.size)chunks.push(e.data)};
+    var state={leadId:leadId,recorder:recorder,stream:stream,chunks:chunks,startTime:startTime,btn:btn};
+    __rec=state;
+    state.timerInterval=setInterval(function(){
+      var s=Math.floor((Date.now()-startTime)/1000);
+      var m=Math.floor(s/60), sec=s%60;
+      btn.innerHTML='⏹️ Stop '+m+':'+(sec<10?'0':'')+sec;
+    },500);
+    recorder.onstop=async function(){
+      clearInterval(state.timerInterval);
+      stream.getTracks().forEach(function(t){t.stop()});
+      btn.classList.remove('recording');
+      btn.innerHTML='⏳ Caricamento...';btn.disabled=true;
+      var blob=new Blob(chunks,{type:'audio/webm'});
+      var durata=Math.round((Date.now()-startTime)/1000);
+      var fd=new FormData();
+      fd.append('file',blob,'rec.webm');
+      fd.append('lead_id',leadId);
+      fd.append('durata',durata);
+      try{
+        var r=await fetch('api_call_upload.php',{method:'POST',credentials:'same-origin',body:fd});
+        var j=await r.json();
+        if(j.ok){sessionStorage.setItem('adminScrollY',window.scrollY);location.hash='lead-'+leadId;location.reload()}
+        else{alert('Errore: '+(j.error||'sconosciuto'));btn.innerHTML='🎙️ Registra Chiamata';btn.disabled=false}
+      }catch(e){alert('Errore upload: '+e.message);btn.innerHTML='🎙️ Registra Chiamata';btn.disabled=false}
+      __rec=null;
+    };
+    recorder.start();
+    btn.classList.add('recording');
+    btn.innerHTML='⏹️ Stop 0:00';
+  }catch(err){alert('Impossibile accedere al microfono: '+err.message)}
+}
+async function delRec(recId){
+  if(!confirm('Eliminare questa registrazione?'))return;
+  try{
+    var fd=new FormData();fd.append('id',recId);
+    var r=await fetch('api_call_delete.php',{method:'POST',credentials:'same-origin',body:fd});
+    var j=await r.json();
+    if(j.ok){sessionStorage.setItem('adminScrollY',window.scrollY);location.reload()}
+    else{alert('Errore: '+(j.error||'eliminazione fallita'))}
+  }catch(e){alert('Errore: '+e.message)}
+}
+window.addEventListener('beforeunload',function(e){
+  if(__rec){e.preventDefault();e.returnValue='Registrazione in corso. Uscire comunque?';return e.returnValue}
+});
 </script>
 </body></html>
