@@ -240,6 +240,8 @@ $nuovi = $pdo->query("SELECT COUNT(*) FROM candidature WHERE stato='nuovo'")->fe
 $non_risponde = $pdo->query("SELECT COUNT(*) FROM candidature WHERE stato='non_risponde'")->fetchColumn();
 $da_ricontattare = $pdo->query("SELECT COUNT(*) FROM candidature WHERE stato='da_ricontattare'")->fetchColumn();
 $scaduti = $pdo->query("SELECT COUNT(*) FROM candidature WHERE prossimo_contatto IS NOT NULL AND prossimo_contatto < NOW() AND stato NOT IN ('completato','annullato')")->fetchColumn();
+$annullati = $pdo->query("SELECT COUNT(*) FROM candidature WHERE stato='annullato'")->fetchColumn();
+$confermati = $pdo->query("SELECT COUNT(*) FROM candidature WHERE stato='confermato'")->fetchColumn();
 $leads = $pdo->query("SELECT * FROM candidature $where ORDER BY created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
 
 $recs_by_lead = [];
@@ -708,6 +710,8 @@ $pdf_files = glob($upload_dir_log . '*.pdf');
     <div class="stat"><div class="num" style="color:#ef4444"><?=$non_risponde?></div><div class="lbl">Non Risp.</div></div>
     <div class="stat"><div class="num" style="color:#f97316"><?=$da_ricontattare?></div><div class="lbl">Da Ricont.</div></div>
     <div class="stat"><div class="num" style="color:<?=$scaduti>0?'#ef4444':'#999'?>"><?=$scaduti?></div><div class="lbl">Scaduti</div></div>
+    <div class="stat"><div class="num" style="color:#22c55e"><?=$confermati?></div><div class="lbl">Confermati</div></div>
+    <div class="stat"><div class="num" style="color:#9ca3af"><?=$annullati?></div><div class="lbl">Annullati</div></div>
     <?php foreach($op_names as $opn): ?><div class="stat"><div class="num"><?=$op_stats[$opn]['totali']?></div><div class="lbl"><?=htmlspecialchars($opn)?></div></div><?php endforeach; ?>
   </div>
   <div class="filters">
