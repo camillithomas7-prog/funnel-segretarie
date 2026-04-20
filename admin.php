@@ -78,6 +78,10 @@ if ($logged && isset($_POST['update_prossimo'])) {
     $pdo->prepare("UPDATE candidature SET prossimo_contatto=? WHERE id=?")->execute([$val, $_POST['cid']]);
     header('Location: admin.php'.$qs.'#lead-'.$_POST['cid']); exit;
 }
+if ($logged && isset($_POST['dismiss_reminder'])) {
+    $pdo->prepare("UPDATE candidature SET prossimo_contatto=NULL WHERE id=?")->execute([$_POST['cid']]);
+    header('Location: admin.php'.$qs); exit;
+}
 if ($logged && isset($_POST['update_anagrafica'])) {
     $pdo->prepare("UPDATE candidature SET nome=?, cognome=?, email=?, telefono=? WHERE id=?")
         ->execute([trim($_POST['nome']??''), trim($_POST['cognome']??''), trim($_POST['email']??''), trim($_POST['telefono']??''), $_POST['cid']]);
@@ -423,6 +427,10 @@ body{font-family:'Inter',sans-serif;background:#f5f5f7;color:#333;min-height:100
           <a href="tel:<?=htmlspecialchars($r['telefono'])?>" style="background:#059669">Chiama</a>
           <a href="<?=wa_link($r['telefono']??'')?>" target="_blank" style="background:#25d366">WA</a>
           <a href="#lead-<?=$r['id']?>" style="background:<?=$accent?>" onclick="document.getElementById('lead-<?=$r['id']?>').scrollIntoView({block:'center'})">Vai</a>
+          <form method="POST" style="display:inline;margin:0" onsubmit="return confirm('Eliminare questo reminder?')">
+            <input type="hidden" name="cid" value="<?=$r['id']?>">
+            <button type="submit" name="dismiss_reminder" value="1" title="Elimina reminder" style="background:#9ca3af;border:none;color:#fff;padding:4px 8px;border-radius:5px;font-size:9px;font-weight:700;cursor:pointer;font-family:inherit">✕</button>
+          </form>
         </div>
       </div>
       <?php endforeach; ?>
