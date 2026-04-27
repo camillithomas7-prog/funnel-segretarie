@@ -130,6 +130,21 @@ if ($logged && isset($_POST['update_ore'])) {
     $pdo->prepare("UPDATE operatori SET ore_settimanali=? WHERE id=?")->execute([$ore, $_POST['op_id']]);
     header('Location: admin.php?tab=team'); exit;
 }
+$team_password = '123';
+$team_session_key = 'team_authed_' . $session_key;
+$team_login_error = false;
+if ($logged && isset($_POST['team_login'])) {
+    if (($_POST['team_password'] ?? '') === $team_password) {
+        $_SESSION[$team_session_key] = true;
+        header('Location: admin.php?tab=team'); exit;
+    }
+    $team_login_error = true;
+}
+if ($logged && isset($_GET['team_logout'])) {
+    unset($_SESSION[$team_session_key]);
+    header('Location: admin.php'); exit;
+}
+$team_authed = !empty($_SESSION[$team_session_key]);
 
 // SOP table
 try { $pdo->exec("CREATE TABLE IF NOT EXISTS sop (id INT AUTO_INCREMENT PRIMARY KEY, titolo VARCHAR(255) NOT NULL, link VARCHAR(500) NOT NULL, descrizione TEXT, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"); } catch(PDOException $e) {}
@@ -771,7 +786,22 @@ $pdf_files = glob($upload_dir_log . '*.pdf');
   <?php endif; ?>
 
 <?php elseif ($tab === 'team'): ?>
-  <h2 style="font-size:16px;color:#111;margin-bottom:4px">Gestione Operatori</h2>
+  <?php if (!$team_authed): ?>
+    <div style="max-width:400px;margin:40px auto;background:#fff;padding:32px;border-radius:12px;box-shadow:0 2px 20px rgba(0,0,0,.06);text-align:center">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="<?=$accent?>" stroke-width="1.5" stroke-linecap="round" style="margin-bottom:12px"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      <h2 style="font-size:18px;font-weight:800;color:#111;margin-bottom:6px">Sezione Riservata</h2>
+      <p style="font-size:12px;color:#888;margin-bottom:20px">Inserisci la password per accedere al pannello Team</p>
+      <?php if ($team_login_error): ?><div style="color:#ef4444;font-size:12px;margin-bottom:12px;font-weight:600">Password errata</div><?php endif; ?>
+      <form method="POST">
+        <input type="password" name="team_password" autofocus required style="width:100%;padding:12px 16px;border:1px solid #e0e0e0;border-radius:8px;font-size:14px;font-family:inherit;margin-bottom:12px;outline:none;background:#fafafa;text-align:center;letter-spacing:2px">
+        <button type="submit" name="team_login" value="1" style="width:100%;padding:12px;background:<?=$accent?>;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Accedi</button>
+      </form>
+    </div>
+  <?php else: ?>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+    <h2 style="font-size:16px;color:#111;margin:0">Gestione Operatori</h2>
+    <a href="?tab=team&team_logout=1" style="font-size:11px;color:#888;text-decoration:none;padding:4px 10px;border:1px solid #e8e8e8;border-radius:6px">Blocca</a>
+  </div>
   <p style="font-size:12px;color:#888;margin-bottom:14px">Imposta le ore settimanali di ogni operatore: i nuovi lead vengono assegnati automaticamente in proporzione (chi ha 0 ore non riceve lead). Totale ore team: <strong><?=$total_ore?>h/sett</strong></p>
   <div class="team-grid">
     <?php foreach($operatori as $op):
@@ -851,6 +881,7 @@ $pdf_files = glob($upload_dir_log . '*.pdf');
     <?php endforeach; ?>
   </div>
   <?php endif; ?>
+  <?php endif; // team_authed ?>
 
 <?php else: ?>
   <div class="stats">
