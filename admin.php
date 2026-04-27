@@ -29,6 +29,8 @@ try { $pdo->exec("CREATE TABLE IF NOT EXISTS chiamate_registrate (id INT AUTO_IN
 if (!is_dir(__DIR__.'/uploads/calls')) @mkdir(__DIR__.'/uploads/calls', 0755, true);
 // Operatori table
 try { $pdo->exec("CREATE TABLE IF NOT EXISTS operatori (id INT AUTO_INCREMENT PRIMARY KEY, nome VARCHAR(50) NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"); } catch(PDOException $e) {}
+try { $pdo->exec("ALTER TABLE operatori ADD COLUMN ore_settimanali INT DEFAULT 0"); } catch(PDOException $e) {}
+require_once __DIR__ . '/lib.php';
 // Log attivita table
 try { $pdo->exec("CREATE TABLE IF NOT EXISTS log_attivita (id INT AUTO_INCREMENT PRIMARY KEY, lead_id INT, operatore VARCHAR(50), azione VARCHAR(255), created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4"); } catch(PDOException $e) {}
 // Migra vecchi WhatsApp
@@ -103,8 +105,9 @@ if ($logged && isset($_POST['add_manual'])) {
     if ($found) {
         $pdo->prepare("UPDATE candidature SET fonte='whatsapp' WHERE id=?")->execute([$found['id']]);
     } else {
-        $pdo->prepare("INSERT INTO candidature (nome, cognome, telefono, email, citta, provincia, metodo_pagamento, fonte, stato) VALUES (?, ?, ?, ?, ?, ?, ?, 'whatsapp', 'nuovo')")
-            ->execute([trim($_POST['m_nome']??''),trim($_POST['m_cognome']??''),$tel,trim($_POST['m_email']??''),trim($_POST['m_citta']??''),trim($_POST['m_provincia']??''),trim($_POST['m_pagamento']??'contrassegno')]);
+        $auto_assigned = pickOperator($pdo);
+        $pdo->prepare("INSERT INTO candidature (nome, cognome, telefono, email, citta, provincia, metodo_pagamento, fonte, stato, assegnato) VALUES (?, ?, ?, ?, ?, ?, ?, 'whatsapp', 'nuovo', ?)")
+            ->execute([trim($_POST['m_nome']??''),trim($_POST['m_cognome']??''),$tel,trim($_POST['m_email']??''),trim($_POST['m_citta']??''),trim($_POST['m_provincia']??''),trim($_POST['m_pagamento']??'contrassegno'), $auto_assigned ?? '']);
     }
     header('Location: admin.php'); exit;
 }
@@ -120,6 +123,11 @@ if ($logged && isset($_POST['add_operatore'])) {
 }
 if ($logged && isset($_POST['del_operatore'])) {
     $pdo->prepare("DELETE FROM operatori WHERE id=?")->execute([$_POST['op_id']]);
+    header('Location: admin.php?tab=team'); exit;
+}
+if ($logged && isset($_POST['update_ore'])) {
+    $ore = max(0, (int)($_POST['ore_settimanali'] ?? 0));
+    $pdo->prepare("UPDATE operatori SET ore_settimanali=? WHERE id=?")->execute([$ore, $_POST['op_id']]);
     header('Location: admin.php?tab=team'); exit;
 }
 
@@ -260,8 +268,10 @@ $op_stats = [];
 foreach ($op_names as $op) {
     $s = $pdo->prepare("SELECT COUNT(*) FROM candidature WHERE assegnato=?"); $s->execute([$op]);
     $s2 = $pdo->prepare("SELECT COUNT(*) FROM candidature WHERE assegnato=? AND stato='completato'"); $s2->execute([$op]);
-    $op_stats[$op] = ['totali'=>$s->fetchColumn(), 'chiusi'=>$s2->fetchColumn()];
+    $s3 = $pdo->prepare("SELECT COUNT(*) FROM candidature WHERE assegnato=? AND stato NOT IN ('completato','annullato','numero_sbagliato')"); $s3->execute([$op]);
+    $op_stats[$op] = ['totali'=>$s->fetchColumn(), 'chiusi'=>$s2->fetchColumn(), 'aperti'=>$s3->fetchColumn()];
 }
+$total_ore = array_sum(array_column($operatori, 'ore_settimanali'));
 ?>
 <!DOCTYPE html><html lang="it"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin - <?=$project_name?></title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -346,12 +356,21 @@ body{font-family:'Inter',sans-serif;background:#f5f5f7;color:#333;min-height:100
 .log-item{font-size:9px;color:#aaa;padding:1px 0}
 .log-item b{color:#888}
 /* Team tab */
-.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:14px}
-.team-card{background:#fff;border-radius:10px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.04);display:flex;justify-content:space-between;align-items:center}
+.team-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;margin-top:14px}
+.team-card{background:#fff;border-radius:10px;padding:14px 16px;box-shadow:0 1px 3px rgba(0,0,0,.04);display:flex;flex-direction:column;gap:10px}
+.team-card__top{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
 .team-card__name{font-size:14px;font-weight:700;color:#111}
-.team-card__stats{font-size:11px;color:#888}
-.team-card__del{background:none;border:none;color:#ccc;cursor:pointer;font-size:16px}
+.team-card__stats{font-size:11px;color:#888;margin-top:2px}
+.team-card__del{background:none;border:none;color:#ccc;cursor:pointer;font-size:18px;line-height:1;padding:0}
 .team-card__del:hover{color:#ef4444}
+.team-card__ore{display:flex;align-items:center;gap:6px;padding-top:8px;border-top:1px solid #f0f0f0}
+.team-card__ore label{font-size:10px;color:#666;text-transform:uppercase;font-weight:700;letter-spacing:.3px}
+.team-card__ore input{width:64px;padding:6px 8px;border:1px solid #e0e0e0;border-radius:6px;font-size:12px;font-family:inherit;text-align:center;outline:none;background:#fafafa}
+.team-card__ore input:focus{border-color:<?=$accent?>}
+.team-card__ore button{padding:6px 10px;background:<?=$accent?>;color:#fff;border:none;border-radius:6px;font-size:10px;font-weight:700;cursor:pointer;font-family:inherit}
+.team-card__quota{display:flex;justify-content:space-between;font-size:10px;color:#888;text-transform:uppercase;font-weight:700;letter-spacing:.3px}
+.team-card__quota .pct{color:<?=$accent?>}
+.team-card__quota .open{color:#3b82f6}
 .team-add{display:flex;gap:6px;margin-top:14px}
 .team-add input{padding:10px 14px;border:1px solid #e0e0e0;border-radius:8px;font-size:13px;flex:1;font-family:inherit;outline:none}
 .team-add button{padding:10px 20px;background:<?=$accent?>;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
@@ -718,15 +737,31 @@ $pdf_files = glob($upload_dir_log . '*.pdf');
 
 <?php elseif ($tab === 'team'): ?>
   <h2 style="font-size:16px;color:#111;margin-bottom:4px">Gestione Operatori</h2>
-  <p style="font-size:12px;color:#888;margin-bottom:14px">Aggiungi o rimuovi le persone che gestiscono i lead</p>
+  <p style="font-size:12px;color:#888;margin-bottom:14px">Imposta le ore settimanali di ogni operatore: i nuovi lead vengono assegnati automaticamente in proporzione (chi ha 0 ore non riceve lead). Totale ore team: <strong><?=$total_ore?>h/sett</strong></p>
   <div class="team-grid">
-    <?php foreach($operatori as $op): ?>
+    <?php foreach($operatori as $op):
+      $ore = (int)($op['ore_settimanali'] ?? 0);
+      $pct = $total_ore > 0 ? round(($ore / $total_ore) * 100) : 0;
+      $aperti = $op_stats[$op['nome']]['aperti'] ?? 0;
+    ?>
     <div class="team-card">
-      <div>
-        <div class="team-card__name"><?=htmlspecialchars($op['nome'])?></div>
-        <div class="team-card__stats"><?=$op_stats[$op['nome']]['totali']??0?> lead · <?=$op_stats[$op['nome']]['chiusi']??0?> chiusi</div>
+      <div class="team-card__top">
+        <div>
+          <div class="team-card__name"><?=htmlspecialchars($op['nome'])?></div>
+          <div class="team-card__stats"><?=$op_stats[$op['nome']]['totali']??0?> lead · <?=$op_stats[$op['nome']]['chiusi']??0?> chiusi</div>
+        </div>
+        <form method="POST" onsubmit="return confirm('Rimuovere?')" style="margin:0"><input type="hidden" name="op_id" value="<?=$op['id']?>"><button type="submit" name="del_operatore" class="team-card__del">&times;</button></form>
       </div>
-      <form method="POST" onsubmit="return confirm('Rimuovere?')"><input type="hidden" name="op_id" value="<?=$op['id']?>"><button type="submit" name="del_operatore" class="team-card__del">&times;</button></form>
+      <form method="POST" class="team-card__ore">
+        <input type="hidden" name="op_id" value="<?=$op['id']?>">
+        <label>Ore/sett</label>
+        <input type="number" name="ore_settimanali" value="<?=$ore?>" min="0" max="168">
+        <button type="submit" name="update_ore" value="1">Salva</button>
+      </form>
+      <div class="team-card__quota">
+        <span class="pct">Quota: <?=$pct?>%</span>
+        <span class="open">Aperti: <?=$aperti?></span>
+      </div>
     </div>
     <?php endforeach; ?>
     <?php if(empty($operatori)): ?><div class="empty" style="padding:20px">Nessun operatore aggiunto</div><?php endif; ?>
