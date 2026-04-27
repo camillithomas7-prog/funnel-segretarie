@@ -1051,6 +1051,15 @@ function copySite(btn,url){
 if('scrollRestoration' in history) history.scrollRestoration='manual';
 document.addEventListener('submit',function(){sessionStorage.setItem('adminScrollY',window.scrollY)});
 document.addEventListener('click',function(){document.querySelectorAll('.panel-switcher.open').forEach(function(s){s.classList.remove('open')})});
+(function(){
+  fetch('https://mediumslateblue-woodcock-923070.hostingersite.com/panels-hidden.php',{cache:'no-store'}).then(function(r){return r.json()}).then(function(data){
+    var hidden=Array.isArray(data.hidden)?data.hidden:[];
+    if(!hidden.length) return;
+    document.querySelectorAll('.panel-switcher__menu a').forEach(function(a){
+      try{var u=new URL(a.href);if(hidden.indexOf(u.hostname.toLowerCase())!==-1) a.style.display='none';}catch(e){}
+    });
+  }).catch(function(){});
+})();
 window.addEventListener('DOMContentLoaded',function(){
   var y=sessionStorage.getItem('adminScrollY');
   if(y!==null){
