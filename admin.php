@@ -278,6 +278,13 @@ body{font-family:'Inter',sans-serif;background:#f5f5f7;color:#333;min-height:100
 .header-links a{font-size:12px;text-decoration:none;padding:5px 12px;border-radius:6px}
 .tab-link{color:#888;background:#fff;border:1px solid #e8e8e8}
 .tab-link.active{background:<?=$accent?>;color:#fff;border-color:<?=$accent?>}
+.panel-switcher{position:relative;display:inline-block}
+.panel-switcher__btn{padding:5px 10px;background:#fff;border:1px solid #e8e8e8;border-radius:6px;font-size:12px;color:#374151;cursor:pointer;font-family:inherit}
+.panel-switcher__btn:hover{background:#f9fafb;border-color:#d1d5db}
+.panel-switcher__menu{position:absolute;top:calc(100% + 4px);right:0;background:#fff;border:1px solid #e5e7eb;border-radius:8px;box-shadow:0 4px 12px rgba(0,0,0,.08);min-width:180px;display:none;z-index:100;overflow:hidden}
+.panel-switcher.open .panel-switcher__menu{display:block}
+.header-links .panel-switcher__menu a{display:block;padding:10px 14px;font-size:12px;color:#374151;border-left:3px solid transparent;border-radius:0;background:#fff}
+.header-links .panel-switcher__menu a:hover{background:#f9fafb}
 .logout{color:#888!important;background:none!important;border:none!important}
 .logout:hover{color:#ef4444!important}
 .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:6px;margin-bottom:14px}
@@ -383,7 +390,17 @@ body{font-family:'Inter',sans-serif;background:#f5f5f7;color:#333;min-height:100
 @media(max-width:600px){.container{padding:10px}.lead__fields{grid-template-columns:1fr}.stats{grid-template-columns:repeat(3,1fr)}.lead__actions{flex-direction:column;align-items:stretch}.lead__actions form{display:flex;gap:3px}}
 </style></head><body>
 <div class="container">
-  <?php $site_url = (!empty($_SERVER['HTTPS']) ? 'https' : 'http').'://'.$_SERVER['HTTP_HOST'].'/'; ?>
+  <?php
+  $site_url = (!empty($_SERVER['HTTPS']) ? 'https' : 'http').'://'.$_SERVER['HTTP_HOST'].'/';
+  $admin_panels = [
+    ['name'=>'Segretarie','host'=>'aliceblue-dragonfly-326952.hostingersite.com','color'=>'#1a3a6b'],
+    ['name'=>'Unghie','host'=>'mediumturquoise-mule-624710.hostingersite.com','color'=>'#e91e8c'],
+    ['name'=>'Lash Art','host'=>'darkred-koala-809285.hostingersite.com','color'=>'#c9a96e'],
+    ['name'=>'ReviewShield','host'=>'midnightblue-pony-128540.hostingersite.com','color'=>'#7c3aed'],
+  ];
+  $current_host = $_SERVER['HTTP_HOST'] ?? '';
+  $other_panels = array_values(array_filter($admin_panels, function($p) use ($current_host){ return $p['host'] !== $current_host; }));
+  ?>
   <div class="header">
     <h1><?=$project_name?> <button type="button" class="btn-copy-site" onclick="copySite(this,'<?=htmlspecialchars($site_url,ENT_QUOTES)?>')" title="Copia il link del sito">📋 Copia Link Sito</button></h1>
     <div class="header-links">
@@ -392,6 +409,14 @@ body{font-family:'Inter',sans-serif;background:#f5f5f7;color:#333;min-height:100
       <a href="?tab=prodotto" class="tab-link <?=$tab==='prodotto'?'active':''?>">Prodotto</a>
       <a href="?tab=logistica" class="tab-link <?=$tab==='logistica'?'active':''?>">Logistica</a>
       <a href="?tab=sop" class="tab-link <?=$tab==='sop'?'active':''?>">SOP</a>
+      <div class="panel-switcher">
+        <button type="button" class="panel-switcher__btn" onclick="this.parentElement.classList.toggle('open');event.stopPropagation()">Pannelli ▾</button>
+        <div class="panel-switcher__menu">
+          <?php foreach($other_panels as $p): ?>
+            <a href="https://<?=$p['host']?>/admin.php" style="border-left-color:<?=$p['color']?>"><?=htmlspecialchars($p['name'])?></a>
+          <?php endforeach; ?>
+        </div>
+      </div>
       <a href="?logout=1" class="logout">Esci</a>
     </div>
   </div>
@@ -877,6 +902,7 @@ function copySite(btn,url){
 }
 if('scrollRestoration' in history) history.scrollRestoration='manual';
 document.addEventListener('submit',function(){sessionStorage.setItem('adminScrollY',window.scrollY)});
+document.addEventListener('click',function(){document.querySelectorAll('.panel-switcher.open').forEach(function(s){s.classList.remove('open')})});
 window.addEventListener('DOMContentLoaded',function(){
   var y=sessionStorage.getItem('adminScrollY');
   if(y!==null){
