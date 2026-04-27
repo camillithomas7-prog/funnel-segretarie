@@ -272,6 +272,24 @@ foreach ($op_names as $op) {
     $op_stats[$op] = ['totali'=>$s->fetchColumn(), 'chiusi'=>$s2->fetchColumn(), 'aperti'=>$s3->fetchColumn()];
 }
 $total_ore = array_sum(array_column($operatori, 'ore_settimanali'));
+
+// KPI per operatore (filtro periodo: all | 30 | 7)
+$kpi_period = in_array($_GET['kpi_period'] ?? 'all', ['all','30','7'], true) ? ($_GET['kpi_period'] ?? 'all') : 'all';
+$kpi_where_period = '';
+if ($kpi_period === '7') $kpi_where_period = " AND created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)";
+elseif ($kpi_period === '30') $kpi_where_period = " AND created_at >= DATE_SUB(NOW(), INTERVAL 30 DAY)";
+
+$kpi_stats = [];
+foreach ($op_names as $op) $kpi_stats[$op] = ['totali'=>0,'da_chiamare'=>0,'chiamati'=>0,'non_risponde'=>0,'da_ricontattare'=>0,'contattato'=>0,'confermato'=>0,'annullato'=>0,'numero_sbagliato'=>0,'completato'=>0,'spedito'=>0];
+$rows = $pdo->query("SELECT assegnato, stato, COUNT(*) AS cnt FROM candidature WHERE assegnato IS NOT NULL AND assegnato!=''$kpi_where_period GROUP BY assegnato, stato")->fetchAll(PDO::FETCH_ASSOC);
+foreach ($rows as $r) {
+    $op = $r['assegnato']; $st = $r['stato']; $cnt = (int)$r['cnt'];
+    if (!isset($kpi_stats[$op])) continue;
+    $kpi_stats[$op]['totali'] += $cnt;
+    if ($st === 'nuovo') $kpi_stats[$op]['da_chiamare'] += $cnt;
+    if (isset($kpi_stats[$op][$st])) $kpi_stats[$op][$st] += $cnt;
+}
+foreach ($kpi_stats as $op => &$_k) { $_k['chiamati'] = $_k['totali'] - $_k['da_chiamare']; } unset($_k);
 ?>
 <!DOCTYPE html><html lang="it"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin - <?=$project_name?></title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -371,6 +389,23 @@ body{font-family:'Inter',sans-serif;background:#f5f5f7;color:#333;min-height:100
 .team-card__quota{display:flex;justify-content:space-between;font-size:10px;color:#888;text-transform:uppercase;font-weight:700;letter-spacing:.3px}
 .team-card__quota .pct{color:<?=$accent?>}
 .team-card__quota .open{color:#3b82f6}
+.kpi-period{display:flex;gap:6px;margin-bottom:14px}
+.kpi-period a{padding:6px 14px;background:#fff;border:1px solid #e8e8e8;border-radius:6px;font-size:11px;text-decoration:none;color:#888;font-weight:600}
+.kpi-period a.active{background:<?=$accent?>;color:#fff;border-color:<?=$accent?>}
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px;margin-top:8px}
+.kpi-card{background:#fff;border-radius:12px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.04)}
+.kpi-card__head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px;padding-bottom:10px;border-bottom:1px solid #f0f0f0}
+.kpi-card__name{font-size:15px;font-weight:800;color:#111}
+.kpi-card__total{font-size:11px;color:#888;font-weight:700}
+.kpi-row{display:flex;justify-content:space-between;align-items:center;padding:5px 0;font-size:12px;color:#444}
+.kpi-row span:last-child{font-weight:700;color:#111;font-variant-numeric:tabular-nums}
+.kpi-row .ok{color:#22c55e}
+.kpi-row .bad{color:#9ca3af}
+.kpi-row .warn{color:#f97316}
+.kpi-row .err{color:#ef4444}
+.kpi-card__ratio{margin-top:10px;padding-top:10px;border-top:1px solid #f0f0f0;display:flex;flex-direction:column;gap:4px;font-size:11px;color:#666}
+.kpi-card__ratio strong{color:<?=$accent?>;font-size:13px}
+.kpi-card__ratio .muted{color:#aaa;font-size:10px}
 .team-add{display:flex;gap:6px;margin-top:14px}
 .team-add input{padding:10px 14px;border:1px solid #e0e0e0;border-radius:8px;font-size:13px;flex:1;font-family:inherit;outline:none}
 .team-add button{padding:10px 20px;background:<?=$accent?>;color:#fff;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit}
@@ -770,6 +805,52 @@ $pdf_files = glob($upload_dir_log . '*.pdf');
     <input type="text" name="nome_operatore" placeholder="Nome operatore..." required>
     <button type="submit" name="add_operatore" value="1">+ Aggiungi</button>
   </form>
+
+  <?php if (!empty($operatori)): ?>
+  <h2 style="font-size:16px;color:#111;margin:28px 0 4px">Performance Operatori</h2>
+  <p style="font-size:12px;color:#888;margin-bottom:12px">KPI calcolati sui lead assegnati nel periodo selezionato</p>
+  <div class="kpi-period">
+    <a href="?tab=team&kpi_period=all" class="<?=$kpi_period==='all'?'active':''?>">Tutto</a>
+    <a href="?tab=team&kpi_period=30" class="<?=$kpi_period==='30'?'active':''?>">Ultimi 30gg</a>
+    <a href="?tab=team&kpi_period=7" class="<?=$kpi_period==='7'?'active':''?>">Ultimi 7gg</a>
+  </div>
+  <div class="kpi-grid">
+    <?php foreach($operatori as $op):
+      $k = $kpi_stats[$op['nome']] ?? null; if (!$k) continue;
+      $tot = max(1, $k['totali']);
+      $pct = function($n) use ($tot, $k){ return $k['totali']>0 ? round($n/$tot*100) : 0; };
+      $tasso_chiamata = $k['totali']>0 ? round($k['chiamati']/$k['totali']*100) : 0;
+      $tasso_conferma = $k['chiamati']>0 ? round($k['confermato']/$k['chiamati']*100) : 0;
+      $tasso_chiusura = $k['totali']>0 ? round($k['completato']/$k['totali']*100) : 0;
+    ?>
+    <div class="kpi-card">
+      <div class="kpi-card__head">
+        <div class="kpi-card__name"><?=htmlspecialchars($op['nome'])?></div>
+        <div class="kpi-card__total"><?=$k['totali']?> lead totali</div>
+      </div>
+      <?php if ($k['totali']===0): ?>
+        <div style="padding:14px 0;text-align:center;color:#aaa;font-size:11px">Nessun lead nel periodo</div>
+      <?php else: ?>
+      <div class="kpi-row"><span>Da chiamare</span><span class="warn"><?=$k['da_chiamare']?> (<?=$pct($k['da_chiamare'])?>%)</span></div>
+      <div class="kpi-row"><span>Chiamati</span><span><?=$k['chiamati']?> (<?=$pct($k['chiamati'])?>%)</span></div>
+      <div class="kpi-row"><span>Contattati</span><span><?=$k['contattato']?> (<?=$pct($k['contattato'])?>%)</span></div>
+      <div class="kpi-row"><span>Non risponde</span><span class="err"><?=$k['non_risponde']?> (<?=$pct($k['non_risponde'])?>%)</span></div>
+      <div class="kpi-row"><span>Da ricontattare</span><span class="warn"><?=$k['da_ricontattare']?> (<?=$pct($k['da_ricontattare'])?>%)</span></div>
+      <div class="kpi-row"><span>Confermati</span><span class="ok"><?=$k['confermato']?> (<?=$pct($k['confermato'])?>%)</span></div>
+      <div class="kpi-row"><span>Annullati</span><span class="bad"><?=$k['annullato']?> (<?=$pct($k['annullato'])?>%)</span></div>
+      <div class="kpi-row"><span>N. sbagliato</span><span class="bad"><?=$k['numero_sbagliato']?> (<?=$pct($k['numero_sbagliato'])?>%)</span></div>
+      <div class="kpi-row"><span>Spediti</span><span><?=$k['spedito']?> (<?=$pct($k['spedito'])?>%)</span></div>
+      <div class="kpi-row"><span>Completati</span><span class="ok"><?=$k['completato']?> (<?=$pct($k['completato'])?>%)</span></div>
+      <div class="kpi-card__ratio">
+        <div>Tasso chiamata: <strong><?=$tasso_chiamata?>%</strong> <span class="muted">contattati / totali</span></div>
+        <div>Tasso conferma: <strong><?=$tasso_conferma?>%</strong> <span class="muted">confermati / chiamati</span></div>
+        <div>Tasso chiusura: <strong><?=$tasso_chiusura?>%</strong> <span class="muted">completati / totali</span></div>
+      </div>
+      <?php endif; ?>
+    </div>
+    <?php endforeach; ?>
+  </div>
+  <?php endif; ?>
 
 <?php else: ?>
   <div class="stats">
