@@ -223,9 +223,9 @@ if (!$logged) { ?>
 <?php exit; }
 
 // Data
-$stati = ['nuovo','contattato','non_risponde','da_ricontattare','confermato','spedito','completato','annullato'];
-$stato_label = ['nuovo'=>'Nuovo','contattato'=>'Contattato','non_risponde'=>'Non Risponde','da_ricontattare'=>'Da Ricontattare','confermato'=>'Confermato','spedito'=>'Spedito','completato'=>'Completato','annullato'=>'Annullato'];
-$stato_color = ['nuovo'=>'#eab308','contattato'=>'#3b82f6','non_risponde'=>'#ef4444','da_ricontattare'=>'#f97316','confermato'=>'#22c55e','spedito'=>'#a855f7','completato'=>'#059669','annullato'=>'#9ca3af'];
+$stati = ['nuovo','contattato','non_risponde','da_ricontattare','confermato','spedito','completato','annullato','numero_sbagliato'];
+$stato_label = ['nuovo'=>'Nuovo','contattato'=>'Contattato','non_risponde'=>'Non Risponde','da_ricontattare'=>'Da Ricontattare','confermato'=>'Confermato','spedito'=>'Spedito','completato'=>'Completato','annullato'=>'Annullato','numero_sbagliato'=>'Numero Sbagliato'];
+$stato_color = ['nuovo'=>'#eab308','contattato'=>'#3b82f6','non_risponde'=>'#ef4444','da_ricontattare'=>'#f97316','confermato'=>'#22c55e','spedito'=>'#a855f7','completato'=>'#059669','annullato'=>'#9ca3af','numero_sbagliato'=>'#be185d'];
 $operatori = $pdo->query("SELECT * FROM operatori ORDER BY nome")->fetchAll(PDO::FETCH_ASSOC);
 $op_names = array_column($operatori, 'nome');
 
@@ -235,7 +235,7 @@ $where = '';
 if ($filter === 'oggi') $where = "WHERE DATE(created_at)=CURDATE()";
 elseif (in_array($filter, $stati)) $where = "WHERE stato='$filter'";
 elseif ($filter === 'whatsapp') $where = "WHERE fonte='whatsapp'";
-elseif ($filter === 'scaduti') $where = "WHERE prossimo_contatto IS NOT NULL AND prossimo_contatto < NOW() AND stato NOT IN ('completato','annullato')";
+elseif ($filter === 'scaduti') $where = "WHERE prossimo_contatto IS NOT NULL AND prossimo_contatto < NOW() AND stato NOT IN ('completato','annullato','numero_sbagliato')";
 elseif (strpos($filter,'op_')===0) { $opf=substr($filter,3); $where = "WHERE assegnato='".addslashes($opf)."'"; }
 
 $totali = $pdo->query("SELECT COUNT(*) FROM candidature")->fetchColumn();
@@ -243,9 +243,10 @@ $oggi_count = $pdo->query("SELECT COUNT(*) FROM candidature WHERE DATE(created_a
 $nuovi = $pdo->query("SELECT COUNT(*) FROM candidature WHERE stato='nuovo'")->fetchColumn();
 $non_risponde = $pdo->query("SELECT COUNT(*) FROM candidature WHERE stato='non_risponde'")->fetchColumn();
 $da_ricontattare = $pdo->query("SELECT COUNT(*) FROM candidature WHERE stato='da_ricontattare'")->fetchColumn();
-$scaduti = $pdo->query("SELECT COUNT(*) FROM candidature WHERE prossimo_contatto IS NOT NULL AND prossimo_contatto < NOW() AND stato NOT IN ('completato','annullato')")->fetchColumn();
+$scaduti = $pdo->query("SELECT COUNT(*) FROM candidature WHERE prossimo_contatto IS NOT NULL AND prossimo_contatto < NOW() AND stato NOT IN ('completato','annullato','numero_sbagliato')")->fetchColumn();
 $annullati = $pdo->query("SELECT COUNT(*) FROM candidature WHERE stato='annullato'")->fetchColumn();
 $confermati = $pdo->query("SELECT COUNT(*) FROM candidature WHERE stato='confermato'")->fetchColumn();
+$numero_sbagliato = $pdo->query("SELECT COUNT(*) FROM candidature WHERE stato='numero_sbagliato'")->fetchColumn();
 $leads = $pdo->query("SELECT * FROM candidature $where ORDER BY created_at DESC")->fetchAll(PDO::FETCH_ASSOC);
 
 $recs_by_lead = [];
@@ -405,7 +406,7 @@ body{font-family:'Inter',sans-serif;background:#f5f5f7;color:#333;min-height:100
   // Reminder: lead da ricontattare ora o scaduti
   $now = date('Y-m-d H:i:s');
   $soon = date('Y-m-d H:i:s', strtotime('+30 minutes'));
-  $reminders = $pdo->query("SELECT * FROM candidature WHERE prossimo_contatto IS NOT NULL AND prossimo_contatto <= '$soon' AND stato NOT IN ('completato','annullato') ORDER BY prossimo_contatto ASC")->fetchAll(PDO::FETCH_ASSOC);
+  $reminders = $pdo->query("SELECT * FROM candidature WHERE prossimo_contatto IS NOT NULL AND prossimo_contatto <= '$soon' AND stato NOT IN ('completato','annullato','numero_sbagliato') ORDER BY prossimo_contatto ASC")->fetchAll(PDO::FETCH_ASSOC);
   if (!empty($reminders)): ?>
   <div class="reminder-bar active">
     <div class="reminder-bar__title">
@@ -720,6 +721,7 @@ $pdf_files = glob($upload_dir_log . '*.pdf');
     <div class="stat"><div class="num" style="color:<?=$scaduti>0?'#ef4444':'#999'?>"><?=$scaduti?></div><div class="lbl">Scaduti</div></div>
     <div class="stat"><div class="num" style="color:#22c55e"><?=$confermati?></div><div class="lbl">Confermati</div></div>
     <div class="stat"><div class="num" style="color:#9ca3af"><?=$annullati?></div><div class="lbl">Annullati</div></div>
+    <div class="stat"><div class="num" style="color:#be185d"><?=$numero_sbagliato?></div><div class="lbl">N. Sbagliato</div></div>
     <?php foreach($op_names as $opn): ?><div class="stat"><div class="num"><?=$op_stats[$opn]['totali']?></div><div class="lbl"><?=htmlspecialchars($opn)?></div></div><?php endforeach; ?>
   </div>
   <div class="filters">
@@ -731,6 +733,7 @@ $pdf_files = glob($upload_dir_log . '*.pdf');
     <a href="?filter=da_ricontattare" class="<?=$filter==='da_ricontattare'?'active':''?>">Da Ricontattare</a>
     <a href="?filter=confermato" class="<?=$filter==='confermato'?'active':''?>">Confermati</a>
     <a href="?filter=annullato" class="<?=$filter==='annullato'?'active':''?>">Annullati</a>
+    <a href="?filter=numero_sbagliato" class="<?=$filter==='numero_sbagliato'?'active':''?>">N. Sbagliato</a>
     <a href="?filter=scaduti" class="<?=$filter==='scaduti'?'active':''?>" style="<?=$scaduti>0?'color:#ef4444;border-color:#fecaca':''?>">Scaduti (<?=$scaduti?>)</a>
     <a href="?filter=whatsapp" class="<?=$filter==='whatsapp'?'active':''?>">WhatsApp</a>
     <?php foreach($op_names as $opn): ?><a href="?filter=op_<?=urlencode($opn)?>" class="<?=$filter==='op_'.$opn?'active':''?>"><?=htmlspecialchars($opn)?></a><?php endforeach; ?>
