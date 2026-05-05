@@ -229,6 +229,10 @@ footer a{color:rgba(255,255,255,0.3)}
 .pay-radio__icon{font-size:24px;flex-shrink:0}
 .pay-radio__box strong{font-size:14px;color:var(--dark);display:block}
 .pay-radio__box small{font-size:11px;color:var(--muted);line-height:1.4}
+.pay-info{display:flex;align-items:center;gap:14px;padding:16px 18px;background:var(--blue-light);border:1.5px solid var(--blue);border-radius:12px}
+.pay-info__icon{font-size:28px;flex-shrink:0}
+.pay-info strong{font-size:14px;color:var(--dark);display:block;margin-bottom:2px}
+.pay-info small{font-size:12px;color:var(--text);line-height:1.5}
 @media(max-width:500px){.form-row{grid-template-columns:1fr}}
 
 /* MOBILE */
@@ -634,29 +638,14 @@ footer a{color:rgba(255,255,255,0.3)}
         <div class="form-group"><label>CAP *</label><input type="text" name="cap" required placeholder="Es. 00100" maxlength="5"></div>
         <div class="form-group"><label>Scala / Interno</label><input type="text" name="scala" placeholder="Es. Scala B, Int. 3"></div>
       </div>
+      <input type="hidden" name="metodo_pagamento" value="contrassegno">
       <div class="form-group">
-        <label>Come preferisci pagare? *</label>
-        <div class="pay-choice">
-          <label class="pay-radio">
-            <input type="radio" name="metodo_pagamento" value="bonifico">
-            <div class="pay-radio__box">
-              <span class="pay-radio__icon">&#127974;</span>
-              <div>
-                <strong>Bonifico Bancario</strong>
-                <small>Paghi subito e ricevi accesso immediato al corso via email</small>
-              </div>
-            </div>
-          </label>
-          <label class="pay-radio">
-            <input type="radio" name="metodo_pagamento" value="contrassegno" checked>
-            <div class="pay-radio__box">
-              <span class="pay-radio__icon">&#128230;</span>
-              <div>
-                <strong>Pagamento alla Consegna</strong>
-                <small>Ricevi il materiale a casa e paghi 89&euro; al corriere</small>
-              </div>
-            </div>
-          </label>
+        <div class="pay-info">
+          <span class="pay-info__icon">&#128230;</span>
+          <div>
+            <strong>Pagamento alla consegna</strong>
+            <small>Ricevi la lettera con il QR Code a casa e paghi 89&euro; al corriere. Niente carte, niente bonifici: semplice e sicuro.</small>
+          </div>
         </div>
       </div>
       <button type="submit" class="cta-btn" style="width:100%;border:none;cursor:pointer;font-family:var(--font)">Invia Candidatura — Solo 10 posti</button>
@@ -702,16 +691,12 @@ footer a{color:rgba(255,255,255,0.3)}
 <!-- METODI PAGAMENTO -->
 <section class="sec" style="background:var(--light)">
   <div class="c">
-    <h2>Come pagare</h2>
-    <p class="sub">Due opzioni semplici e sicure. Scegli quella piu comoda per te.</p>
+    <h2>Come avviene il <em>pagamento</em></h2>
+    <p class="sub">Solo pagamento alla consegna. Semplice, veloce, sicuro: nessun rischio.</p>
     <div class="pay__options">
       <div class="pay__option">
-        <h4><span>&#127974;</span> Bonifico bancario</h4>
-        <p>Effettui il bonifico e ricevi <strong>immediatamente via email</strong> le credenziali per accedere al portale del corso. Inizi subito la formazione.</p>
-      </div>
-      <div class="pay__option">
         <h4><span>&#128230;</span> Pagamento alla consegna</h4>
-        <p>Pensato per chi non puo fare il bonifico. Un <strong>corriere consegnera a casa tua</strong> una lettera contenente il <strong>QR Code di accesso</strong> al portale del corso. Paghi comodamente al corriere alla consegna, inquadri il QR Code e <strong>accedi subito</strong> alla tua area riservata.</p>
+        <p>Un <strong>corriere consegnera a casa tua</strong> una lettera contenente il <strong>QR Code di accesso</strong> al portale del corso. Paghi comodamente al corriere alla consegna, inquadri il QR Code e <strong>accedi subito</strong> alla tua area riservata.</p>
         <img src="img/ritira-paga-accedi.png" alt="Ritira, paga e accedi: come funziona il pagamento alla consegna" class="pay__cod-img">
       </div>
     </div>
@@ -746,7 +731,7 @@ footer a{color:rgba(255,255,255,0.3)}
     <div class="obj"><div class="obj__q" onclick="this.parentElement.classList.toggle('open')">Perche devo pagare 89 euro per lavorare?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="obj__a"><p>Gli 89 euro coprono il costo della formazione — il corso, il materiale, il portale e il supporto. Non paghi per il lavoro, paghi per la formazione che ti rende qualificata. Pensala cosi: investi 89 euro e dal primo mese guadagni 1.500 euro. Si ripaga in meno di 2 giorni di lavoro.</p></div></div>
     <div class="obj"><div class="obj__q" onclick="this.parentElement.classList.toggle('open')">Il corso e' difficile?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="obj__a"><p>No. E' pensato per chiunque, anche senza esperienza. I moduli sono chiari, semplici, passo dopo passo. Il test finale verifica che hai appreso le competenze base. Il 95% delle partecipanti lo supera al primo tentativo.</p></div></div>
     <div class="obj"><div class="obj__q" onclick="this.parentElement.classList.toggle('open')">Quando inizio a lavorare?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="obj__a"><p>Dipende da quanto velocemente completi il corso. In media le nostre allieve completano la formazione in 1-2 settimane. Dopo aver superato il test, l'inserimento lavorativo avviene entro pochi giorni.</p></div></div>
-    <div class="obj"><div class="obj__q" onclick="this.parentElement.classList.toggle('open')">Posso pagare alla consegna?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="obj__a"><p>Si. Se non puoi fare il bonifico, ti inviamo il materiale cartaceo a casa tramite corriere. All'interno trovi le credenziali per accedere al corso online. Paghi al corriere alla consegna.</p></div></div>
+    <div class="obj"><div class="obj__q" onclick="this.parentElement.classList.toggle('open')">Come avviene il pagamento?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="obj__a"><p>Esclusivamente alla consegna. Un corriere ti porta a casa una lettera con il QR Code di accesso al portale: paghi 89 euro al corriere, inquadri il QR Code e accedi subito al corso. Nessuna carta, nessun bonifico, zero rischi.</p></div></div>
     <div class="obj"><div class="obj__q" onclick="this.parentElement.classList.toggle('open')">E se non supero il test?<svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg></div><div class="obj__a"><p>Puoi ripeterlo. Il test e' progettato per verificare le competenze base, non per bocciare. Ti diamo tutto il supporto necessario per superarlo con successo.</p></div></div>
   </div>
 </section>
