@@ -189,6 +189,25 @@ footer a{color:rgba(255,255,255,0.3)}
 .assunzione-box h3{font-size:22px;font-weight:900;margin-bottom:6px}
 .assunzione-box p{font-size:14px;color:rgba(255,255,255,0.7);line-height:1.6}
 
+/* PORTALE PREVIEW */
+.portale-preview{margin-top:24px;background:var(--white);border:1.5px solid #e8e8e8;border-radius:20px;padding:28px 24px;text-align:center}
+.portale-preview__label{display:inline-block;background:var(--blue-light);color:var(--blue);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.06em;padding:5px 14px;border-radius:20px;margin-bottom:12px}
+.portale-preview h3{font-size:18px;font-weight:800;color:var(--dark);margin-bottom:6px}
+.portale-preview p{font-size:13px;color:var(--muted);line-height:1.6;max-width:520px;margin:0 auto 18px}
+.portale-preview img{width:100%;max-width:680px;margin:0 auto;border-radius:12px;box-shadow:0 12px 36px rgba(26,58,107,0.12);border:1px solid #eee}
+
+/* PAY COD IMAGE */
+.pay__cod-img{width:100%;max-width:520px;margin:14px auto 0;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,0.08)}
+
+/* GARANZIA DOC */
+.garanzia-doc{margin-top:20px;background:linear-gradient(135deg,#0f2647 0%,#1a3a6b 100%);border-radius:20px;padding:32px 28px;color:#fff;text-align:center}
+.garanzia-doc__badge{display:inline-block;background:var(--gold);color:var(--blue);padding:5px 14px;border-radius:20px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:0.06em;margin-bottom:14px}
+.garanzia-doc h3{font-size:20px;font-weight:900;color:#fff;margin-bottom:10px;line-height:1.25}
+.garanzia-doc p{font-size:14px;color:rgba(255,255,255,0.75);line-height:1.65;max-width:540px;margin:0 auto 18px}
+.garanzia-doc p strong{color:#fff}
+.garanzia-doc img{width:100%;max-width:440px;margin:0 auto;border-radius:12px;box-shadow:0 16px 48px rgba(0,0,0,0.35);background:#fff}
+.garanzia-doc__note{font-size:12px;color:rgba(255,255,255,0.5);margin-top:14px;font-style:italic}
+
 /* WHATSAPP BUTTON */
 .whatsapp-float{position:fixed!important;bottom:24px!important;right:24px!important;width:60px!important;height:60px!important;background:#25d366!important;border-radius:50%!important;display:flex!important;align-items:center!important;justify-content:center!important;box-shadow:0 4px 16px rgba(37,211,102,0.4)!important;z-index:999999!important;transition:all .3s}
 .whatsapp-float:hover{transform:scale(1.1);box-shadow:0 6px 24px rgba(37,211,102,0.5)!important}
@@ -341,6 +360,17 @@ footer a{color:rgba(255,255,255,0.3)}
   .cert-box img{max-width:300px}
   .assunzione-box{padding:22px 18px}
   .assunzione-box h3{font-size:20px}
+  .portale-preview{padding:20px 16px;border-radius:14px}
+  .portale-preview h3{font-size:16px}
+  .portale-preview p{font-size:12px;margin-bottom:14px}
+  .portale-preview__label{font-size:10px;padding:4px 12px}
+  .garanzia-doc{padding:24px 18px;border-radius:16px}
+  .garanzia-doc h3{font-size:17px}
+  .garanzia-doc p{font-size:13px;margin-bottom:14px}
+  .garanzia-doc__badge{font-size:10px;padding:4px 12px}
+  .garanzia-doc img{max-width:340px}
+  .garanzia-doc__note{font-size:11px}
+  .pay__cod-img{margin-top:12px;border-radius:10px}
   .whatsapp-float{bottom:20px!important;right:16px!important;width:56px!important;height:56px!important}
   .whatsapp-float svg{width:28px;height:28px}
 
@@ -462,6 +492,14 @@ footer a{color:rgba(255,255,255,0.3)}
         </div>
         <span class="modulo__durata">1 ora</span>
       </div>
+    </div>
+
+    <!-- ANTEPRIMA PORTALE -->
+    <div class="portale-preview">
+      <div class="portale-preview__label">Anteprima area riservata</div>
+      <h3>Ecco come si presenta il portale del corso</h3>
+      <p>Una volta dentro, trovi tutti i moduli pronti, video lezioni in alta qualita, materiali scaricabili e il tuo avanzamento sempre sotto controllo.</p>
+      <img src="img/portale.png" alt="Anteprima portale corso segretaria">
     </div>
 
     <!-- CERTIFICATO -->
@@ -673,7 +711,8 @@ footer a{color:rgba(255,255,255,0.3)}
       </div>
       <div class="pay__option">
         <h4><span>&#128230;</span> Pagamento alla consegna</h4>
-        <p>Pensato per chi non puo fare il bonifico. Un <strong>corriere consegnera a casa tua</strong> il materiale cartaceo del corso. All'interno troverai le <strong>credenziali per accedere al portale online</strong> e iniziare la formazione. Paghi comodamente al corriere alla consegna.</p>
+        <p>Pensato per chi non puo fare il bonifico. Un <strong>corriere consegnera a casa tua</strong> una lettera contenente il <strong>QR Code di accesso</strong> al portale del corso. Paghi comodamente al corriere alla consegna, inquadri il QR Code e <strong>accedi subito</strong> alla tua area riservata.</p>
+        <img src="img/ritira-paga-accedi.png" alt="Ritira, paga e accedi: come funziona il pagamento alla consegna" class="pay__cod-img">
       </div>
     </div>
   </div>
@@ -735,6 +774,15 @@ footer a{color:rgba(255,255,255,0.3)}
       <div class="guarantee__icon">&#128170;</div>
       <h3>La nostra garanzia</h3>
       <p>Se completi il corso, superi il test e per qualsiasi motivo non ti inseriamo in azienda, <strong>ti rimborsiamo ogni centesimo</strong>. Il rischio e' zero. La promessa e' concreta: ti formiamo e ti facciamo lavorare.</p>
+    </div>
+
+    <!-- FOGLIO DI GARANZIA FIRMATO -->
+    <div class="garanzia-doc">
+      <div class="garanzia-doc__badge">&#128221; Documento ufficiale firmato</div>
+      <h3>Foglio di garanzia firmato dall'azienda</h3>
+      <p>Non sono parole al vento: rilasciamo a ogni studentessa un <strong>foglio di garanzia ufficiale, firmato e timbrato dalla nostra azienda</strong>, che attesta per iscritto l'<strong>inserimento lavorativo al superamento dell'esame finale</strong>. E' un impegno formale e legalmente verificabile, non una promessa generica.</p>
+      <img src="img/foglio-garanzia.png" alt="Foglio di garanzia inserimento lavorativo firmato dall'azienda">
+      <p class="garanzia-doc__note">Il documento ti viene consegnato insieme alle credenziali di accesso al portale.</p>
     </div>
   </div>
 </section>
